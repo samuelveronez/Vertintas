@@ -1,31 +1,25 @@
 /*
- * Tokens de design VerTintas (proposta v0).
- * Derivados do Instagram @ver.tintas (amostragem de pixels dos posts, out/2026).
- * Validar com o dono antes de congelar. Ver docs/DESIGN-SYSTEM.md.
+ * Tokens de design VerTintas (v1: "branco, verde e a cor da tinta").
+ * Base branca como nos sites de tintas brasileiros (Suvinil, Coral, Lukscolor, Sherwin-Williams);
+ * verde-escuro do logotipo como cor de marca; roseta do logo como destaque.
+ * Sem cores oficiais (empresa familiar): esta paleta é a referência do projeto. Ver docs/DESIGN-SYSTEM.md.
  */
 :root {
   /* Marca */
-  --vt-forest: #2c372e;      /* verde-escuro do logotipo "VerTintas" */
-  --vt-olive: #5d693b;       /* botões de ação secundária (WhatsApp, salvar) */
-  --vt-terracotta: #b2734c;  /* realce, ilustrações (só decorativo em texto pequeno) */
-  --vt-terracotta-ink: #8f4a2b; /* terracota para texto/botão com contraste AA */
-  --vt-copper: #d58d4b;      /* títulos grandes, pinceladas, metálicos */
-  --vt-gold: #e6a828;        /* estrelas, filetes, selos */
+  --vt-forest: #2c372e;       /* verde-escuro do logotipo; header, rodapé, botão primário */
+  --vt-whatsapp: #187a41;     /* botão WhatsApp (branco sobre ele: 5,5:1) */
+  --vt-gold: #f5c518;         /* destaque, selos, filetes (texto escuro por cima) */
+  --vt-promo: #d81e3c;        /* selos de desconto (branco sobre ele: 4,9:1) */
 
-  /* Neutros quentes */
-  --vt-ink: #462812;         /* texto principal sobre claro (marrom-café) */
-  --vt-ink-soft: #6b4a32;    /* texto secundário */
-  --vt-cream: #f5e6d4;       /* fundo de cartões e seções */
-  --vt-paper: #fbf5ec;       /* fundo de página */
-  --vt-line: #e3cfb6;        /* bordas e divisores */
-  --vt-white: #ffffff;
+  /* Neutros */
+  --vt-ink: #17201a;          /* texto principal */
+  --vt-ink-soft: #59645b;     /* texto secundário (sobre branco: 6,0:1) */
+  --vt-white: #ffffff;        /* fundo de página, cartões e fotos de produto */
+  --vt-surface: #f4f6f2;      /* seções alternadas */
+  --vt-line: #e3e7e0;         /* bordas e divisores */
+  --vt-focus: #1d4ed8;        /* anel de foco, independente da marca */
 
-  /* Apoio e status */
-  --vt-teal: #507577;        /* fundo de peças institucionais (ex.: Tracunhaém) */
-  --vt-promo: #8f0503;       /* selos de desconto */
-  --vt-focus: #1d4ed8;       /* anel de foco, independente da marca */
-
-  /* Roseta do logotipo (valores estimados a olho, não medidos), para detalhes decorativos (nunca como único portador de informação) */
+  /* Roseta do logotipo (valores estimados a olho, não medidos): filete e separadores, nunca como único sinal */
   --vt-dot-1: #eb1c52;
   --vt-dot-2: #f58a1f;
   --vt-dot-3: #f5c518;
@@ -34,7 +28,7 @@
   --vt-dot-6: #7b4aa3;
 
   /* Tipografia */
-  --vt-font-display: "Playfair Display", "Libre Baskerville", Georgia, serif;
+  --vt-font-display: "Poppins", system-ui, sans-serif;
   --vt-font-body: "Nunito", "Inter", system-ui, sans-serif;
   --vt-text-xs: 0.8125rem;
   --vt-text-sm: 0.9375rem;
@@ -46,8 +40,8 @@
 
   /* Forma e espaço */
   --vt-radius-sm: 8px;
-  --vt-radius-md: 16px;
-  --vt-radius-lg: 24px;
+  --vt-radius-md: 12px;
+  --vt-radius-lg: 12px;
   --vt-radius-pill: 999px;
   --vt-space-1: 4px;
   --vt-space-2: 8px;
@@ -56,11 +50,17 @@
   --vt-space-6: 24px;
   --vt-space-8: 32px;
   --vt-space-12: 48px;
-  --vt-shadow-card: 0 6px 20px rgb(70 40 18 / 0.12);
+  --vt-shadow-card: 0 2px 8px rgb(23 32 26 / 0.08);
   --vt-border-card: 1px solid var(--vt-line);
-}
 
-/* Foto/placeholder: fundo cremoso por trás de frascos recortados */
-.vt-photo-bg {
-  background: radial-gradient(circle at 50% 40%, var(--vt-paper), var(--vt-cream));
+  /* Filete multicolor da roseta (sob o header e em separadores) */
+  --vt-rosette-stripe: linear-gradient(
+    90deg,
+    var(--vt-dot-1) 0 16.66%,
+    var(--vt-dot-2) 0 33.33%,
+    var(--vt-dot-3) 0 50%,
+    var(--vt-dot-4) 0 66.66%,
+    var(--vt-dot-5) 0 83.33%,
+    var(--vt-dot-6) 0
+  );
 }
