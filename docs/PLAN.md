@@ -90,3 +90,25 @@ Cada fase fecha com lint, typecheck, testes e deploy de preview funcionando.
 11. Domínio já registrado? Orçamento mensal para hospedagem e serviços?
 12. Conteúdo pronto: fotos, fichas técnicas, textos? Haverá blog ou guia de cores?
 13. Idioma: apenas pt-BR?
+
+## Respostas preliminares (Instagram @ver.tintas, out/2026)
+
+Extraídas do perfil público do Instagram. Falta confirmar com o dono. O anúncio do
+Mercado Livre (PVA fosca 100 ml) exigiu login e não pôde ser lido.
+
+| # | Pergunta | O que o Instagram indica |
+| --- | --- | --- |
+| 1 | Marca e identidade | Marca **VerTintas** ("Tintas artesanais"). Logo: roseta de pontos coloridos com "VerTintas" em verde escuro. Rótulos com a mesma roseta. Tom: direto, "direto da fábrica". |
+| 3 | Envio nacional | Bio diz "Enviamos para..." (texto cortado). Confirmar o alcance. |
+| 4 | Retirada | Base em **João Pessoa/PB**. Endereço e horário não informados. |
+| 5 | Linha | **PVA** (cores sólidas, inclui branca e azul), **Acrílica Metálica** (9 cores: ouro, ouro velho, bronze, prata, branco pérola, cereja, azul, rosé gold, cobre), complementos. Destaque "Super Cobertura" para cerâmica e gesso. Tamanhos PVA: **100 ml (R$ 14), 250 ml (R$ 28), 500 ml (R$ 40)**. **Kit econômico**: 12 frascos de 100 ml em cores variadas. |
+| 7 | Preço | Desconto por volume ("quanto mais tinta, menos você paga": preço por ml cai com o tamanho) e promoções por cor (10% off em 12 cores PVA). Pedido pelo WhatsApp. |
+| 12 | Conteúdo | Tem fotos de produto, depoimentos de clientes e dicas (ex.: evitar grumos na PVA). Bom ponto de partida para blog/guia. |
+
+Canal de venda atual: **WhatsApp** (+55 83 98227-0860), Instagram e Mercado Livre.
+
+Seguem em aberto: 2 (gateway), 6 (estoque), 8 (nota fiscal), 9 (CNPJ/preço de
+lojista), 10 (quem opera o painel), 11 (domínio e orçamento), 13 (idioma, provável pt-BR).
+
+Catálogo completo (47 SKUs em 12 anúncios do Mercado Livre), fotos e identidade visual
+observada: [`docs/reference/CATALOG.md`](reference/CATALOG.md).

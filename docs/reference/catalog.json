@@ -1,0 +1,525 @@
+﻿[
+    {
+        "ml_id":  "MLBU5312308864",
+        "line":  "metalica",
+        "color":  "Branco Pérola",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5312308864-1.webp",
+                       "catalog-images/MLBU5312308864-2.webp",
+                       "catalog-images/MLBU5312308864-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5312308864"
+    },
+    {
+        "ml_id":  "MLBU5312322274",
+        "line":  "metalica",
+        "color":  "Azul",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5312322274-1.webp",
+                       "catalog-images/MLBU5312322274-2.webp",
+                       "catalog-images/MLBU5312322274-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5312322274"
+    },
+    {
+        "ml_id":  "MLBU5285869899",
+        "line":  "metalica",
+        "color":  "Bronze",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5285869899-1.webp",
+                       "catalog-images/MLBU5285869899-2.webp",
+                       "catalog-images/MLBU5285869899-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5285869899"
+    },
+    {
+        "ml_id":  "MLBU5285878885",
+        "line":  "metalica",
+        "color":  "Cereja",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5285878885-1.webp",
+                       "catalog-images/MLBU5285878885-2.webp",
+                       "catalog-images/MLBU5285878885-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5285878885"
+    },
+    {
+        "ml_id":  "MLBU5325348328",
+        "line":  "metalica",
+        "color":  "Cobre",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5325348328-1.webp",
+                       "catalog-images/MLBU5325348328-2.webp",
+                       "catalog-images/MLBU5325348328-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5325348328"
+    },
+    {
+        "ml_id":  "MLBU5312312576",
+        "line":  "metalica",
+        "color":  "Ouro",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5312312576-1.webp",
+                       "catalog-images/MLBU5312312576-2.webp",
+                       "catalog-images/MLBU5312312576-3.webp",
+                       "catalog-images/MLBU5312312576-4.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5312312576"
+    },
+    {
+        "ml_id":  "MLBU5325290262",
+        "line":  "metalica",
+        "color":  "Ouro velho",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5325290262-1.webp",
+                       "catalog-images/MLBU5325290262-2.webp",
+                       "catalog-images/MLBU5325290262-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5325290262"
+    },
+    {
+        "ml_id":  "MLBU5199980134",
+        "line":  "metalica",
+        "color":  "Prata",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5199980134-1.webp",
+                       "catalog-images/MLBU5199980134-2.webp",
+                       "catalog-images/MLBU5199980134-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5199980134"
+    },
+    {
+        "ml_id":  "MLBU5312314558",
+        "line":  "metalica",
+        "color":  "Rose Gold",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5312314558-1.webp",
+                       "catalog-images/MLBU5312314558-2.webp",
+                       "catalog-images/MLBU5312314558-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5312314558"
+    },
+    {
+        "ml_id":  "MLBU5358454082",
+        "line":  "pva",
+        "color":  "Azul Country",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5358454082-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5358454082"
+    },
+    {
+        "ml_id":  "MLBU5370188322",
+        "line":  "pva",
+        "color":  "Amarelo Canário",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5370188322-1.webp",
+                       "catalog-images/MLBU5370188322-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5370188322"
+    },
+    {
+        "ml_id":  "MLBU5358374692",
+        "line":  "pva",
+        "color":  "Amarelo Ouro",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5358374692-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5358374692"
+    },
+    {
+        "ml_id":  "MLBU5308305211",
+        "line":  "pva",
+        "color":  "Amarelo Bebê",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5308305211-1.webp",
+                       "catalog-images/MLBU5308305211-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5308305211"
+    },
+    {
+        "ml_id":  "MLBU5329245461",
+        "line":  "pva",
+        "color":  "Areia",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5329245461-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5329245461"
+    },
+    {
+        "ml_id":  "MLBU5308305213",
+        "line":  "pva",
+        "color":  "Azul Bebê",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5308305213-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5308305213"
+    },
+    {
+        "ml_id":  "MLBU5308314843",
+        "line":  "pva",
+        "color":  "Azul Claro",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5308314843-1.webp",
+                       "catalog-images/MLBU5308314843-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5308314843"
+    },
+    {
+        "ml_id":  "MLBU5348485556",
+        "line":  "pva",
+        "color":  "Azul Pavão",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5348485556-1.webp",
+                       "catalog-images/MLBU5348485556-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5348485556"
+    },
+    {
+        "ml_id":  "MLBU5370194084",
+        "line":  "pva",
+        "color":  "Azul da Prússia",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5370194084-1.webp",
+                       "catalog-images/MLBU5370194084-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5370194084"
+    },
+    {
+        "ml_id":  "MLBU5308322503",
+        "line":  "pva",
+        "color":  "Azul Marinho",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5308322503-1.webp",
+                       "catalog-images/MLBU5308322503-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5308322503"
+    },
+    {
+        "ml_id":  "MLBU4858795342",
+        "line":  "pva",
+        "color":  "Branco",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU4858795342-1.webp",
+                       "catalog-images/MLBU4858795342-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU4858795342"
+    },
+    {
+        "ml_id":  "MLBU5358421612",
+        "line":  "pva",
+        "color":  "Burgundy",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5358421612-1.webp",
+                       "catalog-images/MLBU5358421612-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5358421612"
+    },
+    {
+        "ml_id":  "MLBU5317911053",
+        "line":  "pva",
+        "color":  "Capuccino",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5317911053-1.webp",
+                       "catalog-images/MLBU5317911053-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5317911053"
+    },
+    {
+        "ml_id":  "MLBU5317930443",
+        "line":  "pva",
+        "color":  "Castanho Claro",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5317930443-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5317930443"
+    },
+    {
+        "ml_id":  "MLBU5348502844",
+        "line":  "pva",
+        "color":  "Laranja",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5348502844-1.webp",
+                       "catalog-images/MLBU5348502844-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5348502844"
+    },
+    {
+        "ml_id":  "MLBU5308314841",
+        "line":  "pva",
+        "color":  "Marrom",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5308314841-1.webp",
+                       "catalog-images/MLBU5308314841-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5308314841"
+    },
+    {
+        "ml_id":  "MLBU5270782407",
+        "line":  "pva",
+        "color":  "Marrom-escuro",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5270782407-1.webp",
+                       "catalog-images/MLBU5270782407-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5270782407"
+    },
+    {
+        "ml_id":  "MLBU5317922841",
+        "line":  "pva",
+        "color":  "Marsala",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5317922841-1.webp",
+                       "catalog-images/MLBU5317922841-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5317922841"
+    },
+    {
+        "ml_id":  "MLBU5308309069",
+        "line":  "pva",
+        "color":  "Pele",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5308309069-1.webp",
+                       "catalog-images/MLBU5308309069-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5308309069"
+    },
+    {
+        "ml_id":  "MLBU5565468561",
+        "line":  "pva",
+        "color":  "Preto",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5565468561-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5565468561"
+    },
+    {
+        "ml_id":  "MLBU5329823599",
+        "line":  "pva",
+        "color":  "Pérola",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5329823599-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5329823599"
+    },
+    {
+        "ml_id":  "MLBU5329821593",
+        "line":  "pva",
+        "color":  "Rosa Bebê",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5329821593-1.webp",
+                       "catalog-images/MLBU5329821593-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5329821593"
+    },
+    {
+        "ml_id":  "MLBU5370764016",
+        "line":  "pva",
+        "color":  "Turquesa",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5370764016-1.webp",
+                       "catalog-images/MLBU5370764016-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5370764016"
+    },
+    {
+        "ml_id":  "MLBU5348498834",
+        "line":  "pva",
+        "color":  "Verde Colonial",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5348498834-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5348498834"
+    },
+    {
+        "ml_id":  "MLBU5329274309",
+        "line":  "pva",
+        "color":  "Verde Natal",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5329274309-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5329274309"
+    },
+    {
+        "ml_id":  "MLBU5329259011",
+        "line":  "pva",
+        "color":  "Verde Oliva",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5329259011-1.webp",
+                       "catalog-images/MLBU5329259011-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5329259011"
+    },
+    {
+        "ml_id":  "MLBU5348512240",
+        "line":  "pva",
+        "color":  "Verde Água",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5348512240-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5348512240"
+    },
+    {
+        "ml_id":  "MLBU5317920823",
+        "line":  "pva",
+        "color":  "Vermelho",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5317920823-1.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5317920823"
+    },
+    {
+        "ml_id":  "MLBU5198759612",
+        "line":  "pva-tracunhaem",
+        "color":  "Tracunhaém",
+        "price_brl":  14,
+        "images":  [
+                       "catalog-images/MLBU5198759612-1.webp",
+                       "catalog-images/MLBU5198759612-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5198759612"
+    },
+    {
+        "ml_id":  "MLBU5198477418",
+        "line":  "base-100ml",
+        "color":  "Branco",
+        "price_brl":  12,
+        "images":  [
+                       "catalog-images/MLBU5198477418-1.webp",
+                       "catalog-images/MLBU5198477418-2.webp",
+                       "catalog-images/MLBU5198477418-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5198477418"
+    },
+    {
+        "ml_id":  "MLBU5334071560",
+        "line":  "base-250ml",
+        "color":  "Branco",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5334071560-1.webp",
+                       "catalog-images/MLBU5334071560-2.webp",
+                       "catalog-images/MLBU5334071560-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5334071560"
+    },
+    {
+        "ml_id":  "MLBU5334102808",
+        "line":  "base-500ml",
+        "color":  "Branco",
+        "price_brl":  32,
+        "images":  [
+                       "catalog-images/MLBU5334102808-1.webp",
+                       "catalog-images/MLBU5334102808-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5334102808"
+    },
+    {
+        "ml_id":  "MLBU5200411986",
+        "line":  "verniz-100ml",
+        "color":  "Transparente",
+        "price_brl":  18,
+        "images":  [
+                       "catalog-images/MLBU5200411986-1.webp",
+                       "catalog-images/MLBU5200411986-2.webp",
+                       "catalog-images/MLBU5200411986-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5200411986"
+    },
+    {
+        "ml_id":  "MLBU5338620728",
+        "line":  "verniz-250ml",
+        "color":  "Incolor",
+        "price_brl":  35,
+        "images":  [
+                       "catalog-images/MLBU5338620728-1.webp",
+                       "catalog-images/MLBU5338620728-2.webp",
+                       "catalog-images/MLBU5338620728-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5338620728"
+    },
+    {
+        "ml_id":  "MLBU5419540694",
+        "line":  "goma-laca-100ml",
+        "color":  "Marrom",
+        "price_brl":  20,
+        "images":  [
+                       "catalog-images/MLBU5419540694-1.webp",
+                       "catalog-images/MLBU5419540694-2.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5419540694"
+    },
+    {
+        "ml_id":  "MLBU5563294767",
+        "line":  "kit-04-metalicas",
+        "color":  "Variadas",
+        "price_brl":  67,
+        "images":  [
+                       "catalog-images/MLBU5563294767-1.webp",
+                       "catalog-images/MLBU5563294767-2.webp",
+                       "catalog-images/MLBU5563294767-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5563294767"
+    },
+    {
+        "ml_id":  "MLBU5293521239",
+        "line":  "kit-08-metalicas",
+        "color":  "Variadas",
+        "price_brl":  135,
+        "images":  [
+                       "catalog-images/MLBU5293521239-1.webp",
+                       "catalog-images/MLBU5563294767-2.webp",
+                       "catalog-images/MLBU5293521239-3.webp",
+                       "catalog-images/MLBU5563294767-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5293521239"
+    },
+    {
+        "ml_id":  "MLBU5610221872",
+        "line":  "kit-09-metalicas",
+        "color":  "Variadas",
+        "price_brl":  150,
+        "images":  [
+                       "catalog-images/MLBU5610221872-1.webp",
+                       "catalog-images/MLBU5563294767-3.webp"
+                   ],
+        "ml_url":  "https://www.mercadolivre.com.br/up/MLBU5610221872"
+    }
+]
