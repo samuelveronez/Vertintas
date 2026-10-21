@@ -1,0 +1,66 @@
+/*
+ * Tokens de design VerTintas (proposta v0).
+ * Derivados do Instagram @ver.tintas (amostragem de pixels dos posts, out/2026).
+ * Validar com o dono antes de congelar. Ver docs/DESIGN-SYSTEM.md.
+ */
+:root {
+  /* Marca */
+  --vt-forest: #2c372e;      /* verde-escuro do logotipo "VerTintas" */
+  --vt-olive: #5d693b;       /* botões de ação secundária (WhatsApp, salvar) */
+  --vt-terracotta: #b2734c;  /* realce, ilustrações (só decorativo em texto pequeno) */
+  --vt-terracotta-ink: #8f4a2b; /* terracota para texto/botão com contraste AA */
+  --vt-copper: #d58d4b;      /* títulos grandes, pinceladas, metálicos */
+  --vt-gold: #e6a828;        /* estrelas, filetes, selos */
+
+  /* Neutros quentes */
+  --vt-ink: #462812;         /* texto principal sobre claro (marrom-café) */
+  --vt-ink-soft: #6b4a32;    /* texto secundário */
+  --vt-cream: #f5e6d4;       /* fundo de cartões e seções */
+  --vt-paper: #fbf5ec;       /* fundo de página */
+  --vt-line: #e3cfb6;        /* bordas e divisores */
+  --vt-white: #ffffff;
+
+  /* Apoio e status */
+  --vt-teal: #507577;        /* fundo de peças institucionais (ex.: Tracunhaém) */
+  --vt-promo: #8f0503;       /* selos de desconto */
+  --vt-focus: #1d4ed8;       /* anel de foco, independente da marca */
+
+  /* Roseta do logotipo (valores estimados a olho, não medidos), para detalhes decorativos (nunca como único portador de informação) */
+  --vt-dot-1: #eb1c52;
+  --vt-dot-2: #f58a1f;
+  --vt-dot-3: #f5c518;
+  --vt-dot-4: #6bb04a;
+  --vt-dot-5: #2f8fd8;
+  --vt-dot-6: #7b4aa3;
+
+  /* Tipografia */
+  --vt-font-display: "Playfair Display", "Libre Baskerville", Georgia, serif;
+  --vt-font-body: "Nunito", "Inter", system-ui, sans-serif;
+  --vt-text-xs: 0.8125rem;
+  --vt-text-sm: 0.9375rem;
+  --vt-text-base: 1.0625rem;
+  --vt-text-lg: 1.25rem;
+  --vt-text-xl: 1.625rem;
+  --vt-text-2xl: 2.25rem;
+  --vt-text-3xl: 3rem;
+
+  /* Forma e espaço */
+  --vt-radius-sm: 8px;
+  --vt-radius-md: 16px;
+  --vt-radius-lg: 24px;
+  --vt-radius-pill: 999px;
+  --vt-space-1: 4px;
+  --vt-space-2: 8px;
+  --vt-space-3: 12px;
+  --vt-space-4: 16px;
+  --vt-space-6: 24px;
+  --vt-space-8: 32px;
+  --vt-space-12: 48px;
+  --vt-shadow-card: 0 6px 20px rgb(70 40 18 / 0.12);
+  --vt-border-card: 1px solid var(--vt-line);
+}
+
+/* Foto/placeholder: fundo cremoso por trás de frascos recortados */
+.vt-photo-bg {
+  background: radial-gradient(circle at 50% 40%, var(--vt-paper), var(--vt-cream));
+}

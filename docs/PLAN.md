@@ -112,3 +112,5 @@ lojista), 10 (quem opera o painel), 11 (domínio e orçamento), 13 (idioma, prov
 
 Catálogo completo (47 SKUs em 12 anúncios do Mercado Livre), fotos e identidade visual
 observada: [`docs/reference/CATALOG.md`](reference/CATALOG.md).
+
+Design system (proposta v0 a partir do Instagram): [`docs/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
