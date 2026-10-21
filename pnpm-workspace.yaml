@@ -1,0 +1,3 @@
+# unrs-resolver (usado pelo ESLint) traz binário nativo pronto; o script de build é dispensável.
+allowBuilds:
+  unrs-resolver: false
