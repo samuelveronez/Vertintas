@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* Tokens de docs/reference/design-tokens.css (v1) mapeados para o Tailwind. */
+@theme {
+  --color-forest: #2c372e;
+  --color-whatsapp: #187a41;
+  --color-gold: #f5c518;
+  --color-promo: #d81e3c;
+  --color-ink: #17201a;
+  --color-ink-soft: #59645b;
+  --color-surface: #f4f6f2;
+  --color-line: #e3e7e0;
+  --color-dot-1: #eb1c52;
+  --color-dot-2: #f58a1f;
+  --color-dot-3: #f5c518;
+  --color-dot-4: #6bb04a;
+  --color-dot-5: #2f8fd8;
+  --color-dot-6: #7b4aa3;
+  --font-display: var(--font-poppins), system-ui, sans-serif;
+  --font-body: var(--font-nunito), system-ui, sans-serif;
+  --radius-card: 0.75rem;
+  --shadow-card: 0 2px 8px rgb(23 32 26 / 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fff;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
+/* Fotos de produto têm fundo branco: o contêiner também é branco. */
+.photo-bg {
+  background: #fff;
+}
+
+/* Filete multicolor da roseta do logo. */
+.rosette-stripe {
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-dot-1) 0 16.66%,
+    var(--color-dot-2) 0 33.33%,
+    var(--color-dot-3) 0 50%,
+    var(--color-dot-4) 0 66.66%,
+    var(--color-dot-5) 0 83.33%,
+    var(--color-dot-6) 0
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
