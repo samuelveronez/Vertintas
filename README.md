@@ -35,6 +35,18 @@ pnpm dev
 3. Faça merge na `main`: o workflow [`pages.yml`](.github/workflows/pages.yml) roda lint, tipos,
    testes, build e publica em `https://<usuário>.github.io/<repositório>/`.
 
+## Frete (Melhor Envio)
+
+Cotação no carrinho via Supabase Edge Function; ver [ADR 0002](docs/decisions/0002-frete-melhor-envio.md).
+
+```bash
+supabase secrets set ME_TOKEN=... ME_ENV=sandbox ME_FROM_CEP=58000000 \
+  ME_CONTACT_EMAIL=... ALLOWED_ORIGIN=https://<usuário>.github.io
+supabase functions deploy shipping-quote --no-verify-jwt
+```
+
+Depois crie a variável `SHIPPING_API_URL` no GitHub (URL da função) e republique.
+
 ## Dados do catálogo
 
 `src/features/catalog/data.ts` foi gerado de [`docs/reference/catalog.json`](docs/reference/catalog.json).

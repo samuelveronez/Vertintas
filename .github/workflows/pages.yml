@@ -37,6 +37,7 @@ jobs:
           NEXT_PUBLIC_PIX_KEY: ${{ vars.PIX_KEY }}
           NEXT_PUBLIC_PIX_NAME: ${{ vars.PIX_NAME }}
           NEXT_PUBLIC_PIX_CITY: ${{ vars.PIX_CITY }}
+          NEXT_PUBLIC_SHIPPING_API_URL: ${{ vars.SHIPPING_API_URL }}
           NEXT_PUBLIC_ML_STORE_URL: ${{ vars.ML_STORE_URL }}
       - run: touch out/.nojekyll
       - uses: actions/upload-pages-artifact@v3

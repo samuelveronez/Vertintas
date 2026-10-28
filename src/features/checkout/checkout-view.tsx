@@ -7,7 +7,10 @@ import { ButtonLink, buttonClass } from "@/components/button";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { totalCents } from "@/features/cart/cart";
 import { cartActions, useCart } from "@/features/cart/store";
+import { cartSignature, shippingEnabled } from "@/features/shipping/shipping";
+import { useShippingChoice } from "@/features/shipping/store";
 import { siteConfig } from "@/lib/config";
+import { formatDeadline, type ShippingChoice } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 import { buildPixPayload } from "@/lib/pix";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -20,6 +23,9 @@ export function CheckoutView() {
   const [customer, setCustomer] = useState<Customer>();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [delivery, setDelivery] = useState<Customer["delivery"]>("entrega");
+  const saved = useShippingChoice();
+  const shipping = saved?.signature === cartSignature(lines) ? saved : undefined;
+  const needsQuote = shippingEnabled && delivery === "entrega" && !shipping;
 
   if (lines.length === 0 && !customer) {
     return (
@@ -33,7 +39,13 @@ export function CheckoutView() {
   }
 
   if (customer)
-    return <PixStep customer={customer} onBack={() => setCustomer(undefined)} />;
+    return (
+      <PixStep
+        customer={customer}
+        shipping={customer.delivery === "entrega" ? shipping : undefined}
+        onBack={() => setCustomer(undefined)}
+      />
+    );
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -127,8 +139,38 @@ export function CheckoutView() {
         Observações <span className="font-normal">(opcional)</span>
         <textarea name="note" rows={2} className={input} />
       </label>
-      <button type="submit" className={`${buttonClass()} w-full`}>
-        Continuar para o Pix · {formatBRL(totalCents(lines))}
+      {delivery === "entrega" && shipping && (
+        <p className="rounded-xl bg-surface p-3 text-sm">
+          Frete:{" "}
+          <strong>
+            {shipping.option.company} {shipping.option.name}
+          </strong>{" "}
+          · {formatDeadline(shipping.option)} · {formatBRL(shipping.option.priceCents)}{" "}
+          (CEP {shipping.cep}).{" "}
+          <Link href="/carrinho/" className="underline">
+            Alterar
+          </Link>
+        </p>
+      )}
+      {needsQuote && (
+        <p role="alert" className="rounded-xl bg-surface p-3 text-sm">
+          Calcule o frete para o seu CEP no{" "}
+          <Link href="/carrinho/" className="font-bold underline">
+            carrinho
+          </Link>{" "}
+          ou escolha retirar na fábrica.
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={needsQuote}
+        className={`${buttonClass()} w-full disabled:opacity-50`}
+      >
+        Continuar para o Pix ·{" "}
+        {formatBRL(
+          totalCents(lines) +
+            (delivery === "entrega" ? (shipping?.option.priceCents ?? 0) : 0),
+        )}
       </button>
       <p className="text-xs text-ink-soft">
         Usamos seus dados só para atender o pedido. Veja a{" "}
@@ -141,10 +183,19 @@ export function CheckoutView() {
   );
 }
 
-function PixStep({ customer, onBack }: { customer: Customer; onBack: () => void }) {
+function PixStep({
+  customer,
+  shipping,
+  onBack,
+}: {
+  customer: Customer;
+  shipping?: ShippingChoice;
+  onBack: () => void;
+}) {
   const lines = useCart();
   const [orderId] = useState(newOrderId);
-  const [total] = useState(() => totalCents(lines));
+  const [productsTotal] = useState(() => totalCents(lines));
+  const total = productsTotal + (shipping?.option.priceCents ?? 0);
   const [snapshot] = useState(lines);
   const [qr, setQr] = useState("");
   const [copied, setCopied] = useState(false);
@@ -164,12 +215,15 @@ function PixStep({ customer, onBack }: { customer: Customer; onBack: () => void 
   };
 
   const send = (paid: boolean) =>
-    whatsappLink(buildOrderMessage(snapshot, customer, total, orderId, paid));
+    whatsappLink(
+      buildOrderMessage(snapshot, customer, productsTotal, orderId, paid, shipping),
+    );
 
   return (
     <div className="mt-8 max-w-xl space-y-6">
       <p className="text-lg">
-        Pedido <strong>{orderId}</strong> · Total dos produtos:{" "}
+        Pedido <strong>{orderId}</strong> ·{" "}
+        {shipping ? "Total com frete" : "Total dos produtos"}:{" "}
         <strong className="font-display">{formatBRL(total)}</strong>
       </p>
 
@@ -210,7 +264,7 @@ function PixStep({ customer, onBack }: { customer: Customer; onBack: () => void 
         </h2>
         <p className="text-sm text-ink-soft">
           {payload
-            ? "Envie o pedido e o comprovante pelo WhatsApp. Confirmamos o pagamento, calculamos o frete e combinamos a entrega."
+            ? `Envie o pedido e o comprovante pelo WhatsApp. Confirmamos o pagamento e ${shipping ? "despachamos o pedido" : "calculamos o frete e combinamos a entrega"}.`
             : "Enviamos o pedido pelo WhatsApp."}
         </p>
         <a

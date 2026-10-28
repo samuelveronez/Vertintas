@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { CartLine } from "@/features/cart/cart";
 import { findVariant } from "@/features/catalog";
+import { formatDeadline, type ShippingChoice } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 
 export const customerSchema = z
@@ -30,6 +31,7 @@ export function buildOrderMessage(
   totalCents: number,
   orderId: string,
   paidWithPix: boolean,
+  shipping?: ShippingChoice,
 ): string {
   const items = lines.flatMap((line) => {
     const found = findVariant(line.variantId);
@@ -44,7 +46,13 @@ export function buildOrderMessage(
   return [
     `Pedido ${orderId} - site VerTintas`,
     ...items,
-    `Subtotal: ${formatBRL(totalCents)}`,
+    `Produtos: ${formatBRL(totalCents)}`,
+    ...(shipping
+      ? [
+          `Frete: ${shipping.option.company} ${shipping.option.name}, ${formatBRL(shipping.option.priceCents)}, ${formatDeadline(shipping.option)} (CEP ${shipping.cep})`,
+          `Total: ${formatBRL(totalCents + shipping.option.priceCents)}`,
+        ]
+      : []),
     paidWithPix ? "Paguei o Pix (comprovante em anexo)." : "Quero combinar o pagamento.",
     "",
     `Nome: ${customer.name}`,
@@ -55,6 +63,8 @@ export function buildOrderMessage(
     ...(customer.note ? [`Obs.: ${customer.note}`] : []),
     customer.delivery === "retirada"
       ? "Podemos combinar o horário da retirada?"
-      : "Podem calcular o frete?",
+      : shipping
+        ? "Podem despachar assim que confirmar o pagamento?"
+        : "Podem calcular o frete?",
   ].join("\n");
 }
