@@ -1,0 +1,5 @@
+project_id = "vertintas"
+
+# Só cota frete; o token do Melhor Envio fica nos secrets da função.
+[functions.shipping-quote]
+verify_jwt = false
