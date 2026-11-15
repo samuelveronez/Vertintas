@@ -6,8 +6,8 @@ Decisões em [ADR 0002](decisions/0002-painel-de-pedidos-supabase.md). Protótip
 ## 1. Banco (Supabase)
 
 1. Criar um projeto em supabase.com (região São Paulo).
-2. Aplicar `supabase/migrations/20261115000000_orders_panel.sql` (SQL Editor ou
-   `supabase db push`).
+2. Aplicar, nesta ordem, `supabase/migrations/20261115000000_orders_panel.sql` e
+   `20261116000000_public_settings.sql` (SQL Editor ou `supabase db push`).
 3. Em Authentication → Users, criar um usuário por pessoa (e-mail e senha). Depois, no SQL
    Editor, liberar cada um:
 
