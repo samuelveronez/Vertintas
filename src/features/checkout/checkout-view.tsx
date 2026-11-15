@@ -14,7 +14,12 @@ import { cartSignature, shippingEnabled } from "@/features/shipping/shipping";
 import { useShippingChoice } from "@/features/shipping/store";
 import { siteConfig } from "@/lib/config";
 import { supabase } from "@/lib/supabase";
-import { fetchPickupEnabled, fetchPixConfig, type PixConfig } from "@/lib/settings";
+import {
+  fetchOrderTemplate,
+  fetchPickupEnabled,
+  fetchPixConfig,
+  type PixConfig,
+} from "@/lib/settings";
 import { formatDeadline, type QuotedShipping } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 import { buildPixPayload } from "@/lib/pix";
@@ -287,9 +292,16 @@ function PixStep({
     setCopied(true);
   };
 
+  const [template, setTemplate] = useState<string>();
+  useEffect(() => {
+    fetchOrderTemplate()
+      .catch(() => null)
+      .then((saved) => setTemplate(saved ?? undefined));
+  }, []);
+
   const send = (paid: boolean) =>
     whatsappLink(
-      buildOrderMessage(snapshot, customer, productsTotal, orderId, paid, shipping),
+      buildOrderMessage(customer, productsTotal, orderId, paid, shipping, template),
     );
 
   // Avisa o painel da loja; se falhar, o pedido segue pelo WhatsApp como antes.

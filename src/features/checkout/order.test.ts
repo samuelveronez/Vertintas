@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { customerPayload, customerSchema, formatAddress } from "./order";
+import {
+  buildOrderMessage,
+  customerPayload,
+  customerSchema,
+  formatAddress,
+} from "./order";
 
 const base = { name: "Maria Silva", phone: "(83) 98227-0860", note: "" };
 const address = {
@@ -79,5 +84,30 @@ describe("e-mail e consentimento", () => {
     });
     const home = customerPayload(customerSchema.parse(entrega));
     expect(home).toMatchObject({ cep: "58000000", state: "PB", complement: "Apto 2" });
+  });
+});
+
+describe("buildOrderMessage", () => {
+  const pickup = customerSchema.parse({ ...base, delivery: "retirada" });
+
+  it("é curta: código, total e pagamento, sem itens nem dados pessoais", () => {
+    const msg = buildOrderMessage(pickup, 4200, "VT1", true);
+    expect(msg).toContain("Pedido VT1");
+    expect(msg).toContain("R$");
+    expect(msg).toContain("Paguei o Pix");
+    expect(msg).not.toContain("Maria");
+    expect(msg.split("\n")).toHaveLength(4);
+  });
+
+  it("usa o modelo do painel e preserva variável desconhecida", () => {
+    const msg = buildOrderMessage(
+      pickup,
+      4200,
+      "VT1",
+      false,
+      undefined,
+      "Oi! {pedido} {x}",
+    );
+    expect(msg).toBe("Oi! VT1 {x}");
   });
 });

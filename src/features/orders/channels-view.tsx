@@ -5,9 +5,12 @@ import { buttonClass } from "@/components/button";
 import { fetchMlStatus, mlAction, type MlStatus } from "./api";
 import { z } from "zod";
 import { siteConfig } from "@/lib/config";
+import { DEFAULT_ORDER_TEMPLATE } from "@/features/checkout/order";
 import {
+  fetchOrderTemplate,
   fetchPickupEnabled,
   fetchPixConfig,
+  saveOrderTemplate,
   savePickupEnabled,
   savePixConfig,
 } from "@/lib/settings";
@@ -128,6 +131,81 @@ function PixCard() {
   );
 }
 
+const templateSchema = z
+  .string()
+  .trim()
+  .min(1, "Escreva a mensagem.")
+  .max(800, "Mensagem longa demais (até 800 letras).")
+  .refine(
+    (t) => t.includes("{pedido}"),
+    "Mantenha {pedido} na mensagem: é o código do pedido.",
+  );
+
+function WhatsappMessageCard() {
+  const { run, notify } = usePanel();
+  const [loaded, setLoaded] = useState(false);
+  const [text, setText] = useState(DEFAULT_ORDER_TEMPLATE);
+
+  useEffect(() => {
+    fetchOrderTemplate()
+      .then((saved) => saved && setText(saved))
+      .catch(() => undefined)
+      .finally(() => setLoaded(true));
+  }, []);
+
+  const save = async () => {
+    const parsed = templateSchema.safeParse(text);
+    if (!parsed.success) return notify(parsed.error.issues[0].message);
+    await run(
+      () => saveOrderTemplate(parsed.data),
+      "Mensagem salva. O site já usa o novo texto.",
+    );
+  };
+
+  return (
+    <section className={card}>
+      <h2 className="font-display text-xl font-bold">Mensagem do WhatsApp</h2>
+      <p className="text-base text-ink-soft">
+        Texto que o cliente envia ao fechar o pedido no site. Os dados abaixo entram
+        sozinhos no lugar de cada palavra entre chaves:
+      </p>
+      <ul className="list-disc pl-5 text-base">
+        <li>
+          <b>{"{pedido}"}</b>: código do pedido (obrigatório)
+        </li>
+        <li>
+          <b>{"{total}"}</b>: valor, com ou sem frete
+        </li>
+        <li>
+          <b>{"{pagamento}"}</b>: “Paguei o Pix…” ou “Quero combinar…”
+        </li>
+        <li>
+          <b>{"{pergunta}"}</b>: frete, envio ou horário da retirada
+        </li>
+      </ul>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        rows={6}
+        disabled={!loaded}
+        className="min-h-32 w-full rounded-xl border-2 border-line bg-white px-4 py-3"
+      />
+      <div className="flex flex-wrap gap-2">
+        <button className={`${buttonClass()} min-h-12`} disabled={!loaded} onClick={save}>
+          Salvar mensagem
+        </button>
+        <button
+          className={`${buttonClass("outline")} min-h-12`}
+          disabled={!loaded}
+          onClick={() => setText(DEFAULT_ORDER_TEMPLATE)}
+        >
+          Voltar ao padrão
+        </button>
+      </div>
+    </section>
+  );
+}
+
 export function ChannelsView() {
   const { orders, notify, refresh } = usePanel();
   const [ml, setMl] = useState<MlStatus | null>(null);
@@ -222,6 +300,7 @@ export function ChannelsView() {
           </p>
         </section>
         <PixCard />
+        <WhatsappMessageCard />
         <PickupCard />
       </div>
     </div>

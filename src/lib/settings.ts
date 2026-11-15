@@ -41,3 +41,22 @@ export async function savePixConfig(config: PixConfig) {
     .upsert({ key: "pix", value: config });
   if (error) throw new Error(error.message);
 }
+
+/** Modelo da mensagem do WhatsApp editado no painel; `null` usa o padrão do código. */
+export async function fetchOrderTemplate(): Promise<string | null> {
+  if (!supabase) return null;
+  const { data } = await supabase
+    .from("public_settings")
+    .select("value")
+    .eq("key", "whatsapp_template")
+    .maybeSingle();
+  return typeof data?.value === "string" && data.value.trim() ? data.value : null;
+}
+
+export async function saveOrderTemplate(template: string) {
+  if (!supabase) throw new Error("Supabase não configurado");
+  const { error } = await supabase
+    .from("public_settings")
+    .upsert({ key: "whatsapp_template", value: template });
+  if (error) throw new Error(error.message);
+}

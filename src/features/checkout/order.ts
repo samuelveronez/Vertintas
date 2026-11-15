@@ -1,7 +1,5 @@
 import { z } from "zod";
-import type { CartLine } from "@/features/cart/cart";
-import { findVariant } from "@/features/catalog";
-import { formatDeadline, type QuotedShipping } from "@/features/shipping/shipping";
+import type { QuotedShipping } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 
 const text = z.string().trim().default("");
@@ -100,46 +98,41 @@ export function customerPayload(c: Customer) {
 /** Identificador curto do pedido; vai no txid do Pix e na mensagem do WhatsApp. */
 export const newOrderId = () => `VT${Date.now().toString(36).toUpperCase()}`;
 
+/** Variáveis aceitas no modelo da mensagem (editável no painel). */
+export const ORDER_TEMPLATE_VARS = ["pedido", "total", "pagamento", "pergunta"] as const;
+
+export const DEFAULT_ORDER_TEMPLATE = [
+  "Pedido {pedido} - site VerTintas",
+  "Total: {total}",
+  "{pagamento}",
+  "{pergunta}",
+].join("\n");
+
+/** Mensagem curta: itens, nome e endereço já chegam ao painel pelo código do pedido. */
 export function buildOrderMessage(
-  lines: CartLine[],
   customer: Customer,
-  totalCents: number,
+  productsCents: number,
   orderId: string,
   paidWithPix: boolean,
   shipping?: QuotedShipping,
+  template = DEFAULT_ORDER_TEMPLATE,
 ): string {
-  const items = lines.flatMap((line) => {
-    const found = findVariant(line.variantId);
-    if (!found) return [];
-    const { product, variant } = found;
-    const detail = [variant.color, variant.size].filter(Boolean).join(" ");
-    const colors = line.colors ? ` (cores: ${line.colors.join(", ")})` : "";
-    return [
-      `• ${line.qty}x ${product.name} ${detail}${colors} = ${formatBRL(variant.priceCents * line.qty)}`,
-    ];
-  });
-  return [
-    `Pedido ${orderId} - site VerTintas`,
-    ...items,
-    `Produtos: ${formatBRL(totalCents)}`,
-    ...(shipping
-      ? [
-          `Frete: ${shipping.option.company} ${shipping.option.name}, ${formatBRL(shipping.option.priceCents)}, ${formatDeadline(shipping.option)} (CEP ${shipping.cep})`,
-          `Total: ${formatBRL(totalCents + shipping.option.priceCents)}`,
-        ]
-      : []),
-    paidWithPix ? "Paguei o Pix (comprovante em anexo)." : "Quero combinar o pagamento.",
-    "",
-    `Nome: ${customer.name}`,
-    `WhatsApp: ${customer.phone}`,
-    customer.delivery === "retirada"
-      ? "Retirada na fábrica"
-      : `Entrega: ${formatAddress(customer)}`,
-    ...(customer.note ? [`Obs.: ${customer.note}`] : []),
-    customer.delivery === "retirada"
-      ? "Podemos combinar o horário da retirada?"
-      : shipping
-        ? "Podem despachar assim que confirmar o pagamento?"
-        : "Podem calcular o frete?",
-  ].join("\n");
+  const total = productsCents + (shipping?.option.priceCents ?? 0);
+  const values: Record<(typeof ORDER_TEMPLATE_VARS)[number], string> = {
+    pedido: orderId,
+    total: `${formatBRL(total)} (${shipping ? "com frete" : "produtos"})`,
+    pagamento: paidWithPix
+      ? "Paguei o Pix (comprovante em anexo)."
+      : "Quero combinar o pagamento.",
+    pergunta:
+      customer.delivery === "retirada"
+        ? "Retirada na fábrica. Podemos combinar o horário?"
+        : shipping
+          ? "Podem despachar assim que confirmar o pagamento?"
+          : "Podem calcular o frete?",
+  };
+  // Variável desconhecida fica como foi digitada, para o erro aparecer na mensagem.
+  return template.replace(/\{(\w+)\}/g, (match, name: string) =>
+    name in values ? values[name as keyof typeof values] : match,
+  );
 }
