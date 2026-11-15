@@ -11,16 +11,35 @@ import type { Order } from "./types";
 type Step = "pay" | "make" | "pack";
 
 const stepButton = (on: boolean) =>
-  `min-h-24 rounded-2xl border-4 p-3 text-left ${on ? "border-forest bg-[#eef3ee]" : "border-line bg-white"}`;
+  `flex min-h-20 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-3 text-center transition-colors ${on ? "bg-forest text-white shadow-card" : "bg-white text-ink ring-1 ring-line"}`;
 
 const bigAction = `${bigButton} min-h-20 text-2xl`;
-const mainCard = "space-y-5 rounded-3xl border-4 border-forest bg-white p-6";
+const mainCard = "space-y-5 rounded-3xl bg-white p-6 shadow-card ring-1 ring-line";
 const title = "font-display text-3xl font-bold leading-tight";
+
+function Now({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-block rounded-full bg-gold px-3 py-1 text-sm font-bold uppercase tracking-wide text-ink">
+      {children}
+    </span>
+  );
+}
+
+function Highlight({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="rounded-2xl bg-[#eef3ee] px-5 py-4 font-display text-5xl font-bold text-forest">
+      {children}
+    </p>
+  );
+}
 
 function Done({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-3xl border-4 border-line bg-white p-8 text-center text-2xl font-bold text-forest">
-      ✔ {children}
+    <div className="space-y-3 rounded-3xl bg-white p-10 text-center shadow-card ring-1 ring-line">
+      <span className="mx-auto grid size-16 place-items-center rounded-full bg-whatsapp text-3xl text-white">
+        ✔
+      </span>
+      <p className="text-2xl font-bold text-forest">{children}</p>
     </div>
   );
 }
@@ -56,7 +75,7 @@ export function SimpleView({
   ];
 
   return (
-    <div className="space-y-5 text-xl">
+    <div className="mx-auto max-w-xl space-y-5 text-xl">
       <div className="grid grid-cols-3 gap-2">
         {steps.map(([id, n, label]) => (
           <button
@@ -65,8 +84,8 @@ export function SimpleView({
             aria-pressed={step === id}
             onClick={() => setChosen(id)}
           >
-            <b className="block font-display text-4xl leading-none">{n}</b>
-            <span className="text-base font-bold leading-tight">{label}</span>
+            <b className="font-display text-4xl leading-none">{n}</b>
+            <span className="text-sm font-bold leading-tight">{label}</span>
           </button>
         ))}
       </div>
@@ -75,11 +94,10 @@ export function SimpleView({
         (payment ? (
           <>
             <section className={mainCard}>
+              <Now>Agora</Now>
               <h2 className={title}>Pedido de {payment.customer_name}</h2>
-              <p className="font-display text-5xl font-bold text-forest">
-                {formatBRL(orderTotalCents(payment))}
-              </p>
-              <p className="text-2xl">Conferir o Pix no banco.</p>
+              <Highlight>{formatBRL(orderTotalCents(payment))}</Highlight>
+              <p className="text-xl text-ink-soft">Conferir o Pix no banco.</p>
               <button className={bigAction} onClick={() => confirmPayment(run, payment)}>
                 ✔ Recebi o pagamento
               </button>
@@ -96,14 +114,11 @@ export function SimpleView({
         (task ? (
           <>
             <section className={mainCard}>
+              <Now>Agora</Now>
               <h2 className={title}>{task.name}</h2>
-              {task.toMake > 0 && (
-                <p className="font-display text-5xl font-bold text-forest">
-                  Fabricar {task.toMake}
-                </p>
-              )}
+              {task.toMake > 0 && <Highlight>Fabricar {task.toMake}</Highlight>}
               {task.qty > task.toMake && (
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold text-ink-soft">
                   Pegar {task.qty - task.toMake} do estoque
                 </p>
               )}
@@ -116,7 +131,10 @@ export function SimpleView({
                 <h3 className="mb-2 font-bold text-ink-soft">Depois:</h3>
                 <ul className="space-y-1.5">
                   {laterTasks.map((t) => (
-                    <li key={t.key} className="rounded-xl bg-white px-4 py-3">
+                    <li
+                      key={t.key}
+                      className="rounded-xl bg-white px-4 py-3 ring-1 ring-line"
+                    >
                       <b>{t.qty}×</b> {t.name}
                     </li>
                   ))}
@@ -132,8 +150,9 @@ export function SimpleView({
         (order ? (
           <>
             <section className={mainCard}>
+              <Now>Agora</Now>
               <h2 className={title}>Pedido de {order.customer_name}</h2>
-              <ul className="space-y-2 text-2xl">
+              <ul className="space-y-2 rounded-2xl bg-[#eef3ee] p-5 text-2xl">
                 {order.order_items.map((i) => (
                   <li key={i.id}>
                     <b>{i.qty}×</b> {i.name}
