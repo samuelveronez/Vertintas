@@ -114,3 +114,13 @@ Catálogo completo (47 SKUs em 12 anúncios do Mercado Livre), fotos e identidad
 observada: [`docs/reference/CATALOG.md`](reference/CATALOG.md).
 
 Design system (proposta v0 a partir do Instagram): [`docs/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
+
+## Painel de pedidos (nov/2026)
+
+Área logada em `/painel` para operar pedidos de Mercado Livre, site e WhatsApp. Opera: pai
+(fabricação, modo Simples) e irmã (atendimento, modo Completo). Há pequeno estoque. Login por
+e-mail e senha. Decisões em [`decisions/0002-painel-de-pedidos-supabase.md`](decisions/0002-painel-de-pedidos-supabase.md);
+como colocar no ar em [`PAINEL-SETUP.md`](PAINEL-SETUP.md).
+
+Responde as perguntas 6 (estoque real e pequeno) e 10 (equipe familiar, múltiplos usuários).
+Segue em aberto: estoque único com o Mercado Livre e Pix com confirmação automática (fase 2).
