@@ -17,7 +17,14 @@ import { formatDeadline, type QuotedShipping } from "@/features/shipping/shippin
 import { formatBRL } from "@/lib/format";
 import { buildPixPayload } from "@/lib/pix";
 import { whatsappLink } from "@/lib/whatsapp";
-import { buildOrderMessage, customerSchema, newOrderId, type Customer } from "./order";
+import { AddressFields } from "./address-fields";
+import {
+  formatAddress,
+  buildOrderMessage,
+  customerSchema,
+  newOrderId,
+  type Customer,
+} from "./order";
 
 const input = "mt-1 min-h-12 w-full rounded-xl border-2 border-line bg-white px-4";
 
@@ -131,24 +138,11 @@ export function CheckoutView() {
         <input type="hidden" name="delivery" value="entrega" />
       )}
       {delivery === "entrega" ? (
-        <label className="block font-bold">
-          CEP e endereço
-          <textarea
-            name="address"
-            rows={2}
-            autoComplete="street-address"
-            className={input}
-            aria-describedby="address-error"
-          />
-          {field("address")}
-        </label>
+        <AddressFields quotedCep={choice?.cep} errors={errors} />
       ) : (
-        <>
-          <input type="hidden" name="address" value="" />
-          <p className="text-sm text-ink-soft">
-            Endereço e horário da retirada são combinados pelo WhatsApp.
-          </p>
-        </>
+        <p className="text-sm text-ink-soft">
+          Endereço e horário da retirada são combinados pelo WhatsApp.
+        </p>
       )}
       <label className="block font-bold">
         Observações <span className="font-normal">(opcional)</span>
@@ -261,9 +255,13 @@ function PixStep({
       external_ref: orderId,
       name: customer.name,
       phone: customer.phone,
-      destination: customer.delivery === "retirada" ? "" : customer.address,
+      destination: customer.delivery === "retirada" ? "" : formatAddress(customer),
       shipping:
-        customer.delivery === "retirada" ? "Retirada na fábrica" : "A combinar (frete)",
+        customer.delivery === "retirada"
+          ? "Retirada na fábrica"
+          : shipping
+            ? `${shipping.option.company} ${shipping.option.name} · ${formatBRL(shipping.option.priceCents)} · ${formatDeadline(shipping.option)}`
+            : "A combinar (frete)",
       note: customer.note,
       items,
     }).catch(() => undefined);

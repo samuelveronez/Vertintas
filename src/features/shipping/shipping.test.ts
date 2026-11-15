@@ -7,6 +7,7 @@ import {
   signState,
   verifyState,
 } from "../../../supabase/functions/_shared/melhor-envio";
+import { parseViaCep } from "./cep";
 import { quoteProducts } from "./packaging";
 import { cartSignature, formatDeadline } from "./shipping";
 
@@ -90,5 +91,25 @@ describe("oauth", () => {
     const now = Date.parse("2026-11-17T00:00:00Z");
     expect(needsRefresh("2026-11-17T12:00:00Z", now)).toBe(true);
     expect(needsRefresh("2026-12-10T00:00:00Z", now)).toBe(false);
+  });
+});
+
+describe("parseViaCep", () => {
+  it("converte a resposta e trata CEP inexistente", () => {
+    expect(
+      parseViaCep({
+        logradouro: "Av. Paulista",
+        bairro: "Bela Vista",
+        localidade: "São Paulo",
+        uf: "SP",
+      }),
+    ).toEqual({
+      street: "Av. Paulista",
+      district: "Bela Vista",
+      city: "São Paulo",
+      state: "SP",
+    });
+    expect(parseViaCep({ erro: true })).toBeUndefined();
+    expect(parseViaCep("lixo")).toBeUndefined();
   });
 });
