@@ -1,18 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { finishPack, finishTask } from "./actions";
+import { formatBRL } from "@/lib/format";
+import { confirmPayment, finishPack, finishTask } from "./actions";
 import { bigButton } from "./order-ui";
 import { usePanel } from "./panel-context";
-import type { Task } from "./production";
+import { orderTotalCents, type Task } from "./production";
 import type { Order } from "./types";
 
-type Step = "make" | "pack";
+type Step = "pay" | "make" | "pack";
 
 const stepButton = (on: boolean) =>
-  `min-h-24 rounded-2xl border-4 p-4 text-left ${on ? "border-forest bg-[#eef3ee]" : "border-line bg-white"}`;
+  `min-h-24 rounded-2xl border-4 p-3 text-left ${on ? "border-forest bg-[#eef3ee]" : "border-line bg-white"}`;
 
 const bigAction = `${bigButton} min-h-20 text-2xl`;
+const mainCard = "space-y-5 rounded-3xl border-4 border-forest bg-white p-6";
+const title = "font-display text-3xl font-bold leading-tight";
 
 function Done({ children }: { children: React.ReactNode }) {
   return (
@@ -22,42 +25,78 @@ function Done({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Uma tarefa por vez, sem canal, cliente ou valor: só o que fabricar e embalar. */
-export function SimpleView({ tasks, toPack }: { tasks: Task[]; toPack: Order[] }) {
+function Later({ children }: { children: React.ReactNode }) {
+  return <p className="font-bold text-ink-soft">Depois: {children}</p>;
+}
+
+/** Uma tarefa por vez, sem canal nem estoque: confirmar pagamento, fabricar e embalar. */
+export function SimpleView({
+  tasks,
+  toPack,
+  toConfirm,
+}: {
+  tasks: Task[];
+  toPack: Order[];
+  toConfirm: Order[];
+}) {
   const { run } = usePanel();
   const [chosen, setChosen] = useState<Step>();
-  const step: Step = chosen ?? (tasks.length ? "make" : "pack");
+  // Sem escolha do usuário, mostra a primeira etapa que tem trabalho: pagar libera fabricar.
+  const step: Step =
+    chosen ??
+    (toConfirm.length ? "pay" : tasks.length ? "make" : toPack.length ? "pack" : "make");
   const [task, ...laterTasks] = tasks;
   const [order, ...laterOrders] = toPack;
+  const [payment, ...laterPayments] = toConfirm;
+
+  const steps: [Step, number, string][] = [
+    ["pay", toConfirm.length, "confirmar pagamento"],
+    ["make", tasks.length, "para fabricar"],
+    ["pack", toPack.length, "para embalar"],
+  ];
 
   return (
     <div className="space-y-5 text-xl">
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          className={stepButton(step === "make")}
-          aria-pressed={step === "make"}
-          onClick={() => setChosen("make")}
-        >
-          <b className="block font-display text-4xl leading-none">{tasks.length}</b>
-          <span className="font-bold">para fabricar</span>
-        </button>
-        <button
-          className={stepButton(step === "pack")}
-          aria-pressed={step === "pack"}
-          onClick={() => setChosen("pack")}
-        >
-          <b className="block font-display text-4xl leading-none">{toPack.length}</b>
-          <span className="font-bold">para embalar</span>
-        </button>
+      <div className="grid grid-cols-3 gap-2">
+        {steps.map(([id, n, label]) => (
+          <button
+            key={id}
+            className={stepButton(step === id)}
+            aria-pressed={step === id}
+            onClick={() => setChosen(id)}
+          >
+            <b className="block font-display text-4xl leading-none">{n}</b>
+            <span className="text-base font-bold leading-tight">{label}</span>
+          </button>
+        ))}
       </div>
+
+      {step === "pay" &&
+        (payment ? (
+          <>
+            <section className={mainCard}>
+              <h2 className={title}>Pedido de {payment.customer_name}</h2>
+              <p className="font-display text-5xl font-bold text-forest">
+                {formatBRL(orderTotalCents(payment))}
+              </p>
+              <p className="text-2xl">Conferir o Pix no banco.</p>
+              <button className={bigAction} onClick={() => confirmPayment(run, payment)}>
+                ✔ Recebi o pagamento
+              </button>
+            </section>
+            {laterPayments.length > 0 && (
+              <Later>{laterPayments.map((o) => o.customer_name).join(", ")}</Later>
+            )}
+          </>
+        ) : (
+          <Done>Nenhum pagamento para confirmar.</Done>
+        ))}
 
       {step === "make" &&
         (task ? (
           <>
-            <section className="space-y-5 rounded-3xl border-4 border-forest bg-white p-6">
-              <h2 className="font-display text-3xl font-bold leading-tight">
-                {task.name}
-              </h2>
+            <section className={mainCard}>
+              <h2 className={title}>{task.name}</h2>
               {task.toMake > 0 && (
                 <p className="font-display text-5xl font-bold text-forest">
                   Fabricar {task.toMake}
@@ -92,10 +131,8 @@ export function SimpleView({ tasks, toPack }: { tasks: Task[]; toPack: Order[] }
       {step === "pack" &&
         (order ? (
           <>
-            <section className="space-y-5 rounded-3xl border-4 border-forest bg-white p-6">
-              <h2 className="font-display text-3xl font-bold leading-tight">
-                Pedido de {order.customer_name}
-              </h2>
+            <section className={mainCard}>
+              <h2 className={title}>Pedido de {order.customer_name}</h2>
               <ul className="space-y-2 text-2xl">
                 {order.order_items.map((i) => (
                   <li key={i.id}>
@@ -108,9 +145,7 @@ export function SimpleView({ tasks, toPack }: { tasks: Task[]; toPack: Order[] }
               </button>
             </section>
             {laterOrders.length > 0 && (
-              <p className="font-bold text-ink-soft">
-                Depois: {laterOrders.map((o) => o.customer_name).join(", ")}
-              </p>
+              <Later>{laterOrders.map((o) => o.customer_name).join(", ")}</Later>
             )}
           </>
         ) : (

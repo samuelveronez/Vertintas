@@ -24,3 +24,12 @@ export function finishPack(run: Run, order: Order) {
     () => setStatus(order.id, "to_pack"),
   );
 }
+
+/** Pix conferido no banco: libera o pedido para fabricação. */
+export function confirmPayment(run: Run, order: Order) {
+  return run(
+    () => setStatus(order.id, "to_make", { paid_at: new Date().toISOString() }),
+    "Pagamento confirmado. Liberado para fabricar.",
+    () => setStatus(order.id, "pending_payment", { paid_at: null }),
+  );
+}

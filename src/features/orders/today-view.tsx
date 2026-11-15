@@ -99,7 +99,13 @@ export function TodayView() {
 
   const tasks = buildTasks(orders, stock);
   const toPack = orders.filter((o) => o.status === "to_pack");
-  if (mode !== "completo") return <SimpleView tasks={tasks} toPack={toPack} />;
+  if (mode !== "completo") {
+    // Pedido do Mercado Livre se libera sozinho; só os demais dependem de conferir o Pix.
+    const toConfirm = orders.filter(
+      (o) => o.status === "pending_payment" && o.channel !== "ml",
+    );
+    return <SimpleView tasks={tasks} toPack={toPack} toConfirm={toConfirm} />;
+  }
   const ready = orders.filter((o) => o.status === "ready_to_ship");
   const count = (s: Order["status"]) => orders.filter((o) => o.status === s).length;
   const openValue = orders
