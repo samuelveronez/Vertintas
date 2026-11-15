@@ -7,3 +7,7 @@ verify_jwt = false
 # Mercado Livre: o callback OAuth e o webhook não trazem JWT; a função valida a equipe nas ações.
 [functions.ml]
 verify_jwt = false
+
+# Retorno do OAuth do Melhor Envio: o navegador não envia JWT; a função valida `key` e `state`.
+[functions.melhor-envio-auth]
+verify_jwt = false

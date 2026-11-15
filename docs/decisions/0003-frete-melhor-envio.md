@@ -1,4 +1,4 @@
-# 0002. Frete e envio pelo Melhor Envio
+# 0003. Frete e envio pelo Melhor Envio
 
 Status: aceita (substitui a regra "frete combinado no WhatsApp" do ADR 0001)
 
@@ -25,6 +25,12 @@ confirmar o Pix. Automatizar exige pagamento confirmado por webhook (fase 3 do p
 
 ## Consequências
 
-- Segredos só no Supabase: `ME_TOKEN`, `ME_ENV`, `ME_FROM_CEP`, `ME_CONTACT_EMAIL`, `ALLOWED_ORIGIN`.
+- Autenticação OAuth (o access token vale 30 dias e o refresh token, 45): a função
+  `melhor-envio-auth` liga a conta uma vez (`/start?key=…` → `/callback`) e guarda os tokens em
+  `melhor_envio_connection` (RLS sem policies). `shipping-quote` renova o token sozinho; se a conta
+  não estiver ligada, responde 503 e o carrinho oferece combinar o frete pelo WhatsApp.
+- Segredos só no Supabase: `ME_CLIENT_ID`, `ME_CLIENT_SECRET`, `ME_SETUP_KEY`, `ME_ENV`,
+  `ME_FROM_CEP`, `ME_CONTACT_EMAIL`, `ALLOWED_ORIGIN`.
+- O escopo pedido é só `shipping-calculate`; gerar etiqueta pela API exigirá reautorizar.
 - A função é pública (`--no-verify-jwt`) e só faz cotação; limites de entrada evitam abuso.
 - O valor cotado é informativo no navegador; a loja confere antes de postar.

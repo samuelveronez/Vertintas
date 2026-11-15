@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { products } from "@/features/catalog";
 import {
+  needsRefresh,
   normalizeOptions,
   parseQuoteRequest,
+  signState,
+  verifyState,
 } from "../../../supabase/functions/_shared/melhor-envio";
 import { quoteProducts } from "./packaging";
 import { cartSignature, formatDeadline } from "./shipping";
@@ -69,5 +72,23 @@ describe("shipping", () => {
     const base = { id: 1, name: "", company: "", priceCents: 0 };
     expect(formatDeadline({ ...base, daysMin: 3, daysMax: 3 })).toBe("3 dias úteis");
     expect(formatDeadline({ ...base, daysMin: 2, daysMax: 4 })).toBe("2 a 4 dias úteis");
+  });
+});
+
+describe("oauth", () => {
+  it("aceita só estado assinado, recente e com o mesmo segredo", async () => {
+    const now = 1_000_000;
+    const state = await signState("segredo", now);
+    expect(await verifyState("segredo", state, now + 60_000)).toBe(true);
+    expect(await verifyState("outro", state, now + 60_000)).toBe(false);
+    expect(await verifyState("segredo", state, now + 11 * 60_000)).toBe(false);
+    expect(await verifyState("segredo", "1.abc", now)).toBe(false);
+    expect(await verifyState("segredo", null, now)).toBe(false);
+  });
+
+  it("renova o token quando falta menos de um dia", () => {
+    const now = Date.parse("2026-11-17T00:00:00Z");
+    expect(needsRefresh("2026-11-17T12:00:00Z", now)).toBe(true);
+    expect(needsRefresh("2026-12-10T00:00:00Z", now)).toBe(false);
   });
 });

@@ -1,13 +1,7 @@
 // Cotação de frete no Melhor Envio. Existe porque o token da conta não pode ir para o
-// navegador (o site é estático). Secrets: ver docs/decisions/0002-frete-melhor-envio.md.
+// navegador (o site é estático). Autenticação OAuth: ver melhor-envio-auth e o ADR de frete.
 import { normalizeOptions, parseQuoteRequest } from "../_shared/melhor-envio.ts";
-
-const env = (name: string) => Deno.env.get(name) ?? "";
-
-const baseUrl =
-  env("ME_ENV") === "production"
-    ? "https://melhorenvio.com.br"
-    : "https://sandbox.melhorenvio.com.br";
+import { accessToken, baseUrl, env, userAgent } from "../_shared/melhor-envio-oauth.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": env("ALLOWED_ORIGIN") || "*",
@@ -28,14 +22,18 @@ Deno.serve(async (req) => {
   const request = parseQuoteRequest(await req.json().catch(() => null));
   if (!request) return json({ error: "invalid_request" }, 400);
 
-  const res = await fetch(`${baseUrl}/api/v2/me/shipment/calculate`, {
+  const token = await accessToken().catch((e) => {
+    console.error("melhor envio token", e);
+  });
+  if (!token) return json({ error: "not_connected" }, 503);
+
+  const res = await fetch(`${baseUrl()}/api/v2/me/shipment/calculate`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${env("ME_TOKEN")}`,
-      // Exigido pelo Melhor Envio: nome da aplicação e e-mail técnico.
-      "User-Agent": `VerTintas (${env("ME_CONTACT_EMAIL")})`,
+      Authorization: `Bearer ${token}`,
+      "User-Agent": userAgent(),
     },
     body: JSON.stringify({
       from: { postal_code: env("ME_FROM_CEP") },

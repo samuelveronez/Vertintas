@@ -95,3 +95,39 @@ export function normalizeOptions(raw: unknown): ShippingOption[] {
     })
     .sort((a, b) => a.priceCents - b.priceCents);
 }
+
+// --- OAuth: estado assinado e prazo do token (puros, testáveis) ---
+
+const STATE_TTL_MS = 10 * 60 * 1000;
+
+async function hmac(key: string, message: string): Promise<string> {
+  const k = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(key),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(message));
+  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** `state` do OAuth: impede que outra conta do Melhor Envio seja ligada à loja por um link forjado. */
+export async function signState(secret: string, now = Date.now()): Promise<string> {
+  return `${now}.${await hmac(secret, String(now))}`;
+}
+
+export async function verifyState(
+  secret: string,
+  state: string | null,
+  now = Date.now(),
+): Promise<boolean> {
+  const [ts, sig] = (state ?? "").split(".");
+  if (!ts || !sig || !/^\d+$/.test(ts)) return false;
+  const age = now - Number(ts);
+  return age >= 0 && age <= STATE_TTL_MS && sig === (await hmac(secret, ts));
+}
+
+/** Renova com folga de 1 dia: o access token vale 30 dias e o refresh token, 45. */
+export const needsRefresh = (expiresAt: string, now = Date.now()) =>
+  new Date(expiresAt).getTime() - now < 24 * 60 * 60 * 1000;
