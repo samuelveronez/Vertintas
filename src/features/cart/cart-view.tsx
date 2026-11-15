@@ -6,11 +6,16 @@ import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { findVariant } from "@/features/catalog";
 import { asset, formatBRL } from "@/lib/format";
 import { whatsappLink } from "@/lib/whatsapp";
+import { cartSignature, shippingEnabled } from "@/features/shipping/shipping";
+import { ShippingQuote } from "@/features/shipping/shipping-quote";
+import { useShippingChoice } from "@/features/shipping/store";
 import { lineKey, totalCents } from "./cart";
 import { cartActions, useCart } from "./store";
 
 export function CartView() {
   const lines = useCart();
+  const saved = useShippingChoice();
+  const shipping = saved?.signature === cartSignature(lines) ? saved.option : undefined;
 
   if (lines.length === 0) {
     return (
@@ -92,11 +97,29 @@ export function CartView() {
           <span>Subtotal</span>
           <strong className="font-display">{formatBRL(totalCents(lines))}</strong>
         </p>
-        <p className="mt-1 text-sm text-ink-soft">
-          Frete combinado pelo WhatsApp, conforme seu CEP.
-        </p>
+        {shippingEnabled ? (
+          <>
+            <ShippingQuote lines={lines} />
+            {shipping && (
+              <p className="mt-3 flex justify-between text-lg">
+                <span>Frete</span>
+                <strong className="font-display">{formatBRL(shipping.priceCents)}</strong>
+              </p>
+            )}
+            <p className="mt-3 flex justify-between border-t border-line pt-3 text-lg">
+              <span>Total</span>
+              <strong className="font-display">
+                {formatBRL(totalCents(lines) + (shipping?.priceCents ?? 0))}
+              </strong>
+            </p>
+          </>
+        ) : (
+          <p className="mt-1 text-sm text-ink-soft">
+            Frete combinado pelo WhatsApp, conforme seu CEP.
+          </p>
+        )}
         <ButtonLink href="/checkout/" className="mt-5 w-full">
-          Pagar com Pix
+          {shippingEnabled && !shipping ? "Continuar" : "Pagar com Pix"}
         </ButtonLink>
         <a
           className="mt-3 flex min-h-11 items-center justify-center gap-2 text-sm font-bold text-forest underline"

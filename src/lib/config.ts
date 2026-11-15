@@ -13,4 +13,7 @@ export const siteConfig = {
   },
 };
 
+// URL da função de cotação (Supabase Edge Function). Vazia = frete combinado pelo WhatsApp.
+export const shippingApiUrl = process.env.NEXT_PUBLIC_SHIPPING_API_URL ?? "";
+
 export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
