@@ -12,6 +12,7 @@ import { cartActions, useCart } from "@/features/cart/store";
 import { cartSignature, shippingEnabled } from "@/features/shipping/shipping";
 import { useShippingChoice } from "@/features/shipping/store";
 import { siteConfig } from "@/lib/config";
+import { fetchPickupEnabled } from "@/lib/settings";
 import { formatDeadline, type QuotedShipping } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 import { buildPixPayload } from "@/lib/pix";
@@ -24,7 +25,14 @@ export function CheckoutView() {
   const lines = useCart();
   const [customer, setCustomer] = useState<Customer>();
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [delivery, setDelivery] = useState<Customer["delivery"]>("entrega");
+  const [chosenDelivery, setDelivery] = useState<Customer["delivery"]>("entrega");
+  const [pickupEnabled, setPickupEnabled] = useState(true);
+  // Com a retirada desligada no painel, só resta a entrega.
+  const delivery = pickupEnabled ? chosenDelivery : "entrega";
+
+  useEffect(() => {
+    fetchPickupEnabled().then(setPickupEnabled, () => undefined);
+  }, []);
   const saved = useShippingChoice();
   const choice = saved?.signature === cartSignature(lines) ? saved : undefined;
   const quoted = choice?.option ? { ...choice, option: choice.option } : undefined;
@@ -97,27 +105,31 @@ export function CheckoutView() {
         />
         {field("phone")}
       </label>
-      <fieldset>
-        <legend className="font-bold">Como quer receber?</legend>
-        <div className="mt-2 flex gap-3">
-          {(["entrega", "retirada"] as const).map((d) => (
-            <label
-              key={d}
-              className={`flex min-h-12 flex-1 cursor-pointer items-center justify-center rounded-full border-2 font-bold ${delivery === d ? "border-forest bg-forest text-white" : "border-line bg-white"}`}
-            >
-              <input
-                type="radio"
-                name="delivery"
-                value={d}
-                checked={delivery === d}
-                onChange={() => setDelivery(d)}
-                className="sr-only"
-              />
-              {d === "entrega" ? "Entrega" : "Retirar na fábrica"}
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      {pickupEnabled ? (
+        <fieldset>
+          <legend className="font-bold">Como quer receber?</legend>
+          <div className="mt-2 flex gap-3">
+            {(["entrega", "retirada"] as const).map((d) => (
+              <label
+                key={d}
+                className={`flex min-h-12 flex-1 cursor-pointer items-center justify-center rounded-full border-2 font-bold ${delivery === d ? "border-forest bg-forest text-white" : "border-line bg-white"}`}
+              >
+                <input
+                  type="radio"
+                  name="delivery"
+                  value={d}
+                  checked={delivery === d}
+                  onChange={() => setDelivery(d)}
+                  className="sr-only"
+                />
+                {d === "entrega" ? "Entrega" : "Retirar na fábrica"}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ) : (
+        <input type="hidden" name="delivery" value="entrega" />
+      )}
       {delivery === "entrega" ? (
         <label className="block font-bold">
           CEP e endereço

@@ -3,10 +3,52 @@
 import { useEffect, useState } from "react";
 import { buttonClass } from "@/components/button";
 import { fetchMlStatus, mlAction, type MlStatus } from "./api";
+import { fetchPickupEnabled, savePickupEnabled } from "@/lib/settings";
 import { ChannelBadge, formatWhen } from "./order-ui";
 import { usePanel } from "./panel-context";
 
 const card = "space-y-2 rounded-card border border-line bg-white p-4 shadow-card";
+
+function PickupCard() {
+  const { run } = usePanel();
+  const [enabled, setEnabled] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetchPickupEnabled().then(setEnabled, () => setEnabled(null));
+  }, []);
+
+  const toggle = async () => {
+    if (enabled === null) return;
+    const next = !enabled;
+    await run(
+      () => savePickupEnabled(next),
+      next ? "Retirada ligada." : "Retirada desligada.",
+    );
+    setEnabled(await fetchPickupEnabled());
+  };
+
+  return (
+    <section className={card}>
+      <h2 className="font-display text-xl font-bold">Retirada na fábrica</h2>
+      <p>
+        <b>{enabled === null ? "…" : enabled ? "● Ligada" : "○ Desligada"}</b>
+        <br />
+        <span className="text-base text-ink-soft">
+          {enabled === false
+            ? "O site não oferece mais retirar na fábrica: só entrega."
+            : "O cliente pode escolher retirar na fábrica ao fechar o pedido no site."}
+        </span>
+      </p>
+      <button
+        className={`${buttonClass(enabled ? "outline" : "primary")} min-h-12`}
+        disabled={enabled === null}
+        onClick={toggle}
+      >
+        {enabled ? "Desligar retirada" : "Ligar retirada"}
+      </button>
+    </section>
+  );
+}
 
 export function ChannelsView() {
   const { orders, notify, refresh } = usePanel();
@@ -101,6 +143,7 @@ export function ChannelsView() {
             Lançamento manual em Todos os pedidos → “Lançar pedido do WhatsApp”.
           </p>
         </section>
+        <PickupCard />
       </div>
     </div>
   );
