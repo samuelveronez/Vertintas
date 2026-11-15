@@ -16,6 +16,11 @@ export function Header() {
           <Link href="/produtos/" className="hover:underline">
             Produtos
           </Link>
+          {process.env.NEXT_PUBLIC_SUPABASE_URL && (
+            <Link href="/conta/" className="hover:underline">
+              Minha conta
+            </Link>
+          )}
           <CartLink />
         </nav>
       </div>

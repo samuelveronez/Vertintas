@@ -24,9 +24,32 @@ export const customerSchema = z
     district: text,
     city: text,
     state: text,
-    note: z.string().trim(),
+    email: z
+      .string()
+      .trim()
+      .default("")
+      .refine(
+        (v) => v === "" || z.email().safeParse(v).success,
+        "Informe um e-mail válido",
+      ),
+    // Checkbox HTML: "on" quando marcado, ausente quando não.
+    acceptsWhatsapp: z
+      .string()
+      .optional()
+      .transform((v) => v === "on"),
+    acceptsEmail: z
+      .string()
+      .optional()
+      .transform((v) => v === "on"),
+    note: z.string().trim().default(""),
   })
   .superRefine((c, ctx) => {
+    if (c.acceptsEmail && !c.email)
+      ctx.addIssue({
+        code: "custom",
+        path: ["acceptsEmail"],
+        message: "Informe seu e-mail para receber ofertas por e-mail",
+      });
     if (c.delivery === "retirada") return;
     const required: [keyof typeof c, boolean, string][] = [
       ["cep", /^\d{8}$/.test(c.cep), "Informe o CEP com 8 dígitos"],
@@ -50,6 +73,28 @@ export function formatAddress(c: Customer): string {
   return [[line, c.complement].filter(Boolean).join(" - "), place, `CEP ${c.cep}`].join(
     ", ",
   );
+}
+
+/** Dados gravados em `customers`; o endereço só vai quando há entrega. */
+export function customerPayload(c: Customer) {
+  const address =
+    c.delivery === "entrega"
+      ? {
+          cep: c.cep,
+          street: c.street,
+          number: c.number,
+          complement: c.complement || undefined,
+          district: c.district,
+          city: c.city,
+          state: c.state.toUpperCase(),
+        }
+      : {};
+  return {
+    email: c.email || undefined,
+    accepts_whatsapp: c.acceptsWhatsapp,
+    accepts_email: c.acceptsEmail,
+    ...address,
+  };
 }
 
 /** Identificador curto do pedido; vai no txid do Pix e na mensagem do WhatsApp. */

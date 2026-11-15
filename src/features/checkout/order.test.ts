@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { customerSchema, formatAddress } from "./order";
+import { customerPayload, customerSchema, formatAddress } from "./order";
 
 const base = { name: "Maria Silva", phone: "(83) 98227-0860", note: "" };
 const address = {
@@ -42,5 +42,42 @@ describe("customerSchema", () => {
     expect(formatAddress(r)).toBe(
       "Rua das Flores, 120 - Apto 2, Centro - João Pessoa/PB, CEP 58000000",
     );
+  });
+});
+
+describe("e-mail e consentimento", () => {
+  const entrega = { ...base, delivery: "entrega", ...address };
+
+  it("consentimento só é verdadeiro quando o checkbox vem marcado", () => {
+    const r = customerSchema.parse({ ...entrega, acceptsWhatsapp: "on" });
+    expect(r.acceptsWhatsapp).toBe(true);
+    expect(r.acceptsEmail).toBe(false);
+  });
+
+  it("oferta por e-mail exige e-mail, e o e-mail precisa ser válido", () => {
+    const sem = customerSchema.safeParse({ ...entrega, acceptsEmail: "on" });
+    expect(sem.error?.issues.map((i) => i.path[0])).toEqual(["acceptsEmail"]);
+    const ruim = customerSchema.safeParse({ ...entrega, email: "maria@" });
+    expect(ruim.error?.issues.map((i) => i.path[0])).toEqual(["email"]);
+    expect(
+      customerSchema.safeParse({
+        ...entrega,
+        email: "maria@exemplo.com",
+        acceptsEmail: "on",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("monta o cliente para o banco; sem endereço na retirada", () => {
+    const pickup = customerPayload(
+      customerSchema.parse({ ...base, delivery: "retirada", acceptsWhatsapp: "on" }),
+    );
+    expect(pickup).toEqual({
+      email: undefined,
+      accepts_whatsapp: true,
+      accepts_email: false,
+    });
+    const home = customerPayload(customerSchema.parse(entrega));
+    expect(home).toMatchObject({ cep: "58000000", state: "PB", complement: "Apto 2" });
   });
 });

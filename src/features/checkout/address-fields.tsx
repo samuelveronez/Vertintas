@@ -16,30 +16,40 @@ type Status = "idle" | "loading" | "notFound" | "error";
 export function AddressFields({
   quotedCep,
   errors,
+  initial,
 }: {
   quotedCep?: string;
   errors: Record<string, string>;
+  /** Endereço salvo na conta do cliente; não é sobrescrito pela busca do CEP salvo. */
+  initial?: Partial<
+    Record<
+      "cep" | "street" | "number" | "complement" | "district" | "city" | "state",
+      string | null
+    >
+  >;
 }) {
-  const [cep, setCep] = useState(quotedCep ?? "");
-  const [street, setStreet] = useState("");
-  const [district, setDistrict] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
+  const [cep, setCep] = useState(quotedCep ?? initial?.cep ?? "");
+  const [street, setStreet] = useState(initial?.street ?? "");
+  const [district, setDistrict] = useState(initial?.district ?? "");
+  const [city, setCity] = useState(initial?.city ?? "");
+  const [state, setState] = useState(initial?.state ?? "");
+  const [savedCep] = useState(initial?.street ? initial.cep : undefined);
   // Resultado da última busca; "buscando" é derivado, para não setar estado direto no efeito.
   const [lookup, setLookup] = useState<{
     cep: string;
     status: "found" | "notFound" | "error";
   }>();
-  const status: Status = !isCep(cep)
-    ? "idle"
-    : lookup?.cep !== cep
-      ? "loading"
-      : lookup.status === "found"
-        ? "idle"
-        : lookup.status;
+  const status: Status =
+    !isCep(cep) || cep === savedCep
+      ? "idle"
+      : lookup?.cep !== cep
+        ? "loading"
+        : lookup.status === "found"
+          ? "idle"
+          : lookup.status;
 
   useEffect(() => {
-    if (!isCep(cep)) return;
+    if (!isCep(cep) || cep === savedCep) return;
     let current = true;
     lookupCep(cep).then(
       (found) => {
@@ -56,7 +66,7 @@ export function AddressFields({
     return () => {
       current = false;
     };
-  }, [cep]);
+  }, [cep, savedCep]);
 
   const error = (name: string) =>
     errors[name] && (
@@ -116,6 +126,7 @@ export function AddressFields({
           Número
           <input
             name="number"
+            defaultValue={initial?.number ?? ""}
             autoComplete="address-line2"
             placeholder="Ex.: 120 ou S/N"
             className={input}
@@ -125,7 +136,12 @@ export function AddressFields({
         </label>
         <label className="block font-bold">
           Complemento <span className="font-normal">(opcional)</span>
-          <input name="complement" placeholder="Apto, bloco…" className={input} />
+          <input
+            name="complement"
+            defaultValue={initial?.complement ?? ""}
+            placeholder="Apto, bloco…"
+            className={input}
+          />
         </label>
       </div>
 

@@ -67,6 +67,20 @@ export type NewOrderItem = {
   unit_price_cents: number;
 };
 
+/** Cliente gravado junto do pedido do site; o endereço só vai quando há entrega. */
+export type NewOrderCustomer = {
+  email?: string;
+  accepts_whatsapp: boolean;
+  accepts_email: boolean;
+  cep?: string;
+  street?: string;
+  number?: string;
+  complement?: string;
+  district?: string;
+  city?: string;
+  state?: string;
+};
+
 export type NewOrder = {
   external_ref: string;
   name: string;
@@ -75,6 +89,7 @@ export type NewOrder = {
   shipping: string;
   note: string;
   items: NewOrderItem[];
+  customer?: NewOrderCustomer;
 };
 
 /** Pedido lançado à mão pela equipe (WhatsApp). `paid` libera direto para fabricação. */
@@ -114,6 +129,7 @@ export async function placeSiteOrder(order: NewOrder) {
     p_shipping: order.shipping,
     p_note: order.note,
     p_items: order.items,
+    p_customer: order.customer ?? null,
   });
   if (error) throw new Error(error.message);
 }

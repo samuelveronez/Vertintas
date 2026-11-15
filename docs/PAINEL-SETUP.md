@@ -7,7 +7,8 @@ Decisões em [ADR 0002](decisions/0002-painel-de-pedidos-supabase.md). Protótip
 
 1. Criar um projeto em supabase.com (região São Paulo).
 2. Aplicar, nesta ordem, `supabase/migrations/20261115000000_orders_panel.sql` e
-   `20261116000000_public_settings.sql` (SQL Editor ou `supabase db push`).
+   `20261116000000_public_settings.sql` e, depois, `20261118000000_customers.sql` (SQL Editor ou
+   `supabase db push`).
 3. Em Authentication → Users, criar um usuário por pessoa (e-mail e senha). Depois, no SQL
    Editor, liberar cada um:
 
@@ -18,7 +19,10 @@ Decisões em [ADR 0002](decisions/0002-painel-de-pedidos-supabase.md). Protótip
 
    `is_admin = true` só para quem pode conectar o Mercado Livre.
 
-4. Em Authentication → Providers, desligar cadastro público (_Allow new users to sign up_).
+4. Em Authentication → Providers, **manter** o cadastro público ligado: o login por e-mail dos
+   clientes ([ADR 0004](decisions/0004-clientes-e-remarketing.md)) cria usuários. A equipe é só quem
+   está em `staff`; os demais usuários não acessam o painel. Em Authentication → URL Configuration,
+   adicionar a URL do site (`/conta/`) em _Redirect URLs_, e configurar SMTP próprio (Resend, Brevo…).
 
 ## 2. Site (GitHub Pages)
 

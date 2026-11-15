@@ -7,18 +7,22 @@ import { ButtonLink, buttonClass } from "@/components/button";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { totalCents } from "@/features/cart/cart";
 import { findVariant } from "@/features/catalog";
+import { useProfile } from "@/features/customers/profile";
 import { placeSiteOrder } from "@/features/orders/api";
 import { cartActions, useCart } from "@/features/cart/store";
 import { cartSignature, shippingEnabled } from "@/features/shipping/shipping";
 import { useShippingChoice } from "@/features/shipping/store";
 import { siteConfig } from "@/lib/config";
+import { supabase } from "@/lib/supabase";
 import { fetchPickupEnabled } from "@/lib/settings";
 import { formatDeadline, type QuotedShipping } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 import { buildPixPayload } from "@/lib/pix";
 import { whatsappLink } from "@/lib/whatsapp";
 import { AddressFields } from "./address-fields";
+import { Consent } from "./consent";
 import {
+  customerPayload,
   formatAddress,
   buildOrderMessage,
   customerSchema,
@@ -40,6 +44,7 @@ export function CheckoutView() {
   useEffect(() => {
     fetchPickupEnabled().then(setPickupEnabled, () => undefined);
   }, []);
+  const { user, profile } = useProfile();
   const saved = useShippingChoice();
   const choice = saved?.signature === cartSignature(lines) ? saved : undefined;
   const quoted = choice?.option ? { ...choice, option: choice.option } : undefined;
@@ -89,11 +94,26 @@ export function CheckoutView() {
     );
 
   return (
-    <form onSubmit={submit} noValidate className="mt-8 max-w-xl space-y-5">
+    <form
+      key={profile ? "conta" : "convidado"}
+      onSubmit={submit}
+      noValidate
+      className="mt-8 max-w-xl space-y-5"
+    >
+      {!user && supabase && (
+        <p className="rounded-xl bg-surface p-3 text-sm">
+          Já tem conta?{" "}
+          <Link href="/conta/" className="font-bold underline">
+            Entre para usar seus dados salvos
+          </Link>
+          . Comprar sem conta também funciona.
+        </p>
+      )}
       <label className="block font-bold">
         Nome completo
         <input
           name="name"
+          defaultValue={profile?.name}
           autoComplete="name"
           className={input}
           aria-describedby="name-error"
@@ -105,6 +125,7 @@ export function CheckoutView() {
         <input
           name="phone"
           type="tel"
+          defaultValue={profile?.phone ?? ""}
           autoComplete="tel"
           inputMode="tel"
           className={input}
@@ -138,12 +159,34 @@ export function CheckoutView() {
         <input type="hidden" name="delivery" value="entrega" />
       )}
       {delivery === "entrega" ? (
-        <AddressFields quotedCep={choice?.cep} errors={errors} />
+        <AddressFields
+          quotedCep={choice?.cep}
+          errors={errors}
+          initial={
+            !choice || choice.cep === profile?.cep ? (profile ?? undefined) : undefined
+          }
+        />
       ) : (
         <p className="text-sm text-ink-soft">
           Endereço e horário da retirada são combinados pelo WhatsApp.
         </p>
       )}
+      <label className="block font-bold">
+        E-mail <span className="font-normal">(opcional)</span>
+        <input
+          name="email"
+          type="email"
+          defaultValue={profile?.email ?? user?.email ?? ""}
+          autoComplete="email"
+          className={input}
+          aria-describedby="email-error"
+        />
+        {field("email")}
+      </label>
+      <Consent
+        errors={errors}
+        defaults={{ whatsapp: profile?.accepts_whatsapp, email: profile?.accepts_email }}
+      />
       <label className="block font-bold">
         Observações <span className="font-normal">(opcional)</span>
         <textarea name="note" rows={2} className={input} />
@@ -264,6 +307,7 @@ function PixStep({
             : "A combinar (frete)",
       note: customer.note,
       items,
+      customer: customerPayload(customer),
     }).catch(() => undefined);
   };
 
