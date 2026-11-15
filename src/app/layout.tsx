@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Nunito, Poppins } from "next/font/google";
-import { Footer } from "@/components/footer";
-import { CartBar } from "@/components/cart-bar";
-import { Header } from "@/components/header";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -24,12 +21,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={`${poppins.variable} ${nunito.variable}`}>
-      <body className="flex min-h-screen flex-col pb-14 md:pb-0">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <CartBar />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

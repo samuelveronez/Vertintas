@@ -38,6 +38,8 @@ jobs:
           NEXT_PUBLIC_PIX_NAME: ${{ vars.PIX_NAME }}
           NEXT_PUBLIC_PIX_CITY: ${{ vars.PIX_CITY }}
           NEXT_PUBLIC_ML_STORE_URL: ${{ vars.ML_STORE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
       - run: touch out/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
