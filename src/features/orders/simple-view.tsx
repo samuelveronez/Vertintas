@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { formatBRL } from "@/lib/format";
 import { confirmPayment, finishPack, finishTask } from "./actions";
 import { bigButton } from "./order-ui";
@@ -8,47 +7,38 @@ import { usePanel } from "./panel-context";
 import { orderTotalCents, type Task } from "./production";
 import type { Order } from "./types";
 
-type Step = "pay" | "make" | "pack";
+const card = "space-y-3 rounded-2xl bg-white p-4 shadow-card ring-1 ring-line";
+const action = `${bigButton} min-h-14 text-xl`;
 
-const stepButton = (on: boolean) =>
-  `flex min-h-20 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-3 text-center transition-colors ${on ? "bg-forest text-white shadow-card" : "bg-white text-ink ring-1 ring-line"}`;
-
-const bigAction = `${bigButton} min-h-20 text-2xl`;
-const mainCard = "space-y-5 rounded-3xl bg-white p-6 shadow-card ring-1 ring-line";
-const title = "font-display text-3xl font-bold leading-tight";
-
-function Now({ children }: { children: React.ReactNode }) {
+function Column({
+  title,
+  count,
+  empty,
+  children,
+}: {
+  title: string;
+  count: number;
+  empty: string;
+  children: React.ReactNode;
+}) {
   return (
-    <span className="inline-block rounded-full bg-gold px-3 py-1 text-sm font-bold uppercase tracking-wide text-ink">
-      {children}
-    </span>
+    <section className="space-y-3 rounded-3xl bg-[#eef3ee] p-3">
+      <h2 className="flex items-center justify-between px-1 font-display text-2xl font-bold text-forest">
+        {title}
+        <span className="grid min-w-9 place-items-center rounded-full bg-forest px-2 py-0.5 text-lg text-white">
+          {count}
+        </span>
+      </h2>
+      {count === 0 ? (
+        <p className="px-1 py-4 text-center text-ink-soft">{empty}</p>
+      ) : (
+        children
+      )}
+    </section>
   );
 }
 
-function Highlight({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="rounded-2xl bg-[#eef3ee] px-5 py-4 font-display text-5xl font-bold text-forest">
-      {children}
-    </p>
-  );
-}
-
-function Done({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="space-y-3 rounded-3xl bg-white p-10 text-center shadow-card ring-1 ring-line">
-      <span className="mx-auto grid size-16 place-items-center rounded-full bg-whatsapp text-3xl text-white">
-        ✔
-      </span>
-      <p className="text-2xl font-bold text-forest">{children}</p>
-    </div>
-  );
-}
-
-function Later({ children }: { children: React.ReactNode }) {
-  return <p className="font-bold text-ink-soft">Depois: {children}</p>;
-}
-
-/** Uma tarefa por vez, sem canal nem estoque: confirmar pagamento, fabricar e embalar. */
+/** Kanban sem canal nem estoque: três colunas, cada cartão com um botão que o move adiante. */
 export function SimpleView({
   tasks,
   toPack,
@@ -59,117 +49,61 @@ export function SimpleView({
   toConfirm: Order[];
 }) {
   const { run } = usePanel();
-  const [chosen, setChosen] = useState<Step>();
-  // Sem escolha do usuário, mostra a primeira etapa que tem trabalho: pagar libera fabricar.
-  const step: Step =
-    chosen ??
-    (toConfirm.length ? "pay" : tasks.length ? "make" : toPack.length ? "pack" : "make");
-  const [task, ...laterTasks] = tasks;
-  const [order, ...laterOrders] = toPack;
-  const [payment, ...laterPayments] = toConfirm;
-
-  const steps: [Step, number, string][] = [
-    ["pay", toConfirm.length, "confirmar pagamento"],
-    ["make", tasks.length, "para fabricar"],
-    ["pack", toPack.length, "para embalar"],
-  ];
 
   return (
-    <div className="mx-auto max-w-xl space-y-5 text-xl">
-      <div className="grid grid-cols-3 gap-2">
-        {steps.map(([id, n, label]) => (
-          <button
-            key={id}
-            className={stepButton(step === id)}
-            aria-pressed={step === id}
-            onClick={() => setChosen(id)}
-          >
-            <b className="font-display text-4xl leading-none">{n}</b>
-            <span className="text-sm font-bold leading-tight">{label}</span>
-          </button>
+    <div className="grid items-start gap-4 text-xl md:grid-cols-3">
+      <Column title="Pagamento" count={toConfirm.length} empty="Nada para confirmar.">
+        {toConfirm.map((o) => (
+          <article key={o.id} className={card}>
+            <h3 className="font-bold leading-tight">{o.customer_name}</h3>
+            <p className="font-display text-3xl font-bold text-forest">
+              {formatBRL(orderTotalCents(o))}
+            </p>
+            <button className={action} onClick={() => confirmPayment(run, o)}>
+              ✔ Recebi
+            </button>
+          </article>
         ))}
-      </div>
+      </Column>
 
-      {step === "pay" &&
-        (payment ? (
-          <>
-            <section className={mainCard}>
-              <Now>Agora</Now>
-              <h2 className={title}>Pedido de {payment.customer_name}</h2>
-              <Highlight>{formatBRL(orderTotalCents(payment))}</Highlight>
-              <p className="text-xl text-ink-soft">Conferir o Pix no banco.</p>
-              <button className={bigAction} onClick={() => confirmPayment(run, payment)}>
-                ✔ Recebi o pagamento
-              </button>
-            </section>
-            {laterPayments.length > 0 && (
-              <Later>{laterPayments.map((o) => o.customer_name).join(", ")}</Later>
+      <Column title="Fabricar" count={tasks.length} empty="Nada para fabricar.">
+        {tasks.map((t) => (
+          <article key={t.key} className={card}>
+            <h3 className="font-bold leading-tight">{t.name}</h3>
+            {t.toMake > 0 && (
+              <p className="font-display text-3xl font-bold text-forest">
+                Fabricar {t.toMake}
+              </p>
             )}
-          </>
-        ) : (
-          <Done>Nenhum pagamento para confirmar.</Done>
+            {t.qty > t.toMake && (
+              <p className="font-bold text-ink-soft">
+                Pegar {t.qty - t.toMake} do estoque
+              </p>
+            )}
+            <button className={action} onClick={() => finishTask(run, t)}>
+              ✔ Pronto
+            </button>
+          </article>
         ))}
+      </Column>
 
-      {step === "make" &&
-        (task ? (
-          <>
-            <section className={mainCard}>
-              <Now>Agora</Now>
-              <h2 className={title}>{task.name}</h2>
-              {task.toMake > 0 && <Highlight>Fabricar {task.toMake}</Highlight>}
-              {task.qty > task.toMake && (
-                <p className="text-2xl font-bold text-ink-soft">
-                  Pegar {task.qty - task.toMake} do estoque
-                </p>
-              )}
-              <button className={bigAction} onClick={() => finishTask(run, task)}>
-                ✔ Pronto
-              </button>
-            </section>
-            {laterTasks.length > 0 && (
-              <section>
-                <h3 className="mb-2 font-bold text-ink-soft">Depois:</h3>
-                <ul className="space-y-1.5">
-                  {laterTasks.map((t) => (
-                    <li
-                      key={t.key}
-                      className="rounded-xl bg-white px-4 py-3 ring-1 ring-line"
-                    >
-                      <b>{t.qty}×</b> {t.name}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-          </>
-        ) : (
-          <Done>Nada para fabricar.</Done>
+      <Column title="Embalar" count={toPack.length} empty="Nada para embalar.">
+        {toPack.map((o) => (
+          <article key={o.id} className={card}>
+            <h3 className="font-bold leading-tight">{o.customer_name}</h3>
+            <ul className="space-y-1 rounded-xl bg-[#eef3ee] p-3">
+              {o.order_items.map((i) => (
+                <li key={i.id}>
+                  <b>{i.qty}×</b> {i.name}
+                </li>
+              ))}
+            </ul>
+            <button className={action} onClick={() => finishPack(run, o)}>
+              📦 Embalei
+            </button>
+          </article>
         ))}
-
-      {step === "pack" &&
-        (order ? (
-          <>
-            <section className={mainCard}>
-              <Now>Agora</Now>
-              <h2 className={title}>Pedido de {order.customer_name}</h2>
-              <ul className="space-y-2 rounded-2xl bg-[#eef3ee] p-5 text-2xl">
-                {order.order_items.map((i) => (
-                  <li key={i.id}>
-                    <b>{i.qty}×</b> {i.name}
-                  </li>
-                ))}
-              </ul>
-              <button className={bigAction} onClick={() => finishPack(run, order)}>
-                📦 Embalei
-              </button>
-            </section>
-            {laterOrders.length > 0 && (
-              <Later>{laterOrders.map((o) => o.customer_name).join(", ")}</Later>
-            )}
-          </>
-        ) : (
-          <Done>Nada para embalar.</Done>
-        ))}
+      </Column>
     </div>
   );
 }
