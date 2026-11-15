@@ -3,6 +3,10 @@
 Decisões em [ADR 0002](decisions/0002-painel-de-pedidos-supabase.md). Protótipo visual em
 [`prototype/painel.html`](prototype/painel.html).
 
+> **Pix da loja:** a chave, o nome e a cidade ficam em Canais de venda → Pix da loja (tabela
+> `public_settings`, chave `pix`). Valem mais que `PIX_KEY` das variáveis de build, que vira só
+> o padrão.
+
 ## 1. Banco (Supabase)
 
 1. Criar um projeto em supabase.com (região São Paulo).

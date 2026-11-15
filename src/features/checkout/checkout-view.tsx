@@ -14,7 +14,7 @@ import { cartSignature, shippingEnabled } from "@/features/shipping/shipping";
 import { useShippingChoice } from "@/features/shipping/store";
 import { siteConfig } from "@/lib/config";
 import { supabase } from "@/lib/supabase";
-import { fetchPickupEnabled } from "@/lib/settings";
+import { fetchPickupEnabled, fetchPixConfig, type PixConfig } from "@/lib/settings";
 import { formatDeadline, type QuotedShipping } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 import { buildPixPayload } from "@/lib/pix";
@@ -260,9 +260,22 @@ function PixStep({
   const [qr, setQr] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const { key, name, city } = siteConfig.pix;
-  const payload = key
-    ? buildPixPayload({ key, name, city, amountCents: total, txid: orderId })
+  // O Pix do painel vale mais que o das variáveis de build; falha na leitura cai no padrão.
+  const [pix, setPix] = useState<PixConfig>();
+  useEffect(() => {
+    fetchPixConfig()
+      .catch(() => null)
+      .then((config) => setPix(config ?? siteConfig.pix));
+  }, []);
+
+  const payload = pix?.key
+    ? buildPixPayload({
+        key: pix.key,
+        name: pix.name || siteConfig.pix.name,
+        city: pix.city || siteConfig.pix.city,
+        amountCents: total,
+        txid: orderId,
+      })
     : "";
 
   useEffect(() => {
@@ -343,6 +356,10 @@ function PixStep({
             {copied ? "Código copiado!" : "Copiar código Pix"}
           </button>
         </section>
+      ) : !pix ? (
+        <p className="rounded-card border border-line bg-surface p-6">
+          Carregando o Pix…
+        </p>
       ) : (
         <p className="rounded-card border border-line bg-surface p-6">
           O Pix automático ainda não está configurado. Envie o pedido pelo WhatsApp que
