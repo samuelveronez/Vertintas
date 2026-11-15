@@ -59,6 +59,8 @@ type PanelData = {
   ) => Promise<void>;
 };
 
+export type Run = PanelData["run"];
+
 const Ctx = createContext<PanelData | null>(null);
 
 export const usePanel = () => {

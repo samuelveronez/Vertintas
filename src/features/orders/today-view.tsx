@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { formatBRL } from "@/lib/format";
-import { markMade, setStatus, undoMade } from "./api";
+import { finishPack, finishTask } from "./actions";
 import { ChannelBadge, OrderDialog, OrderRow, bigButton } from "./order-ui";
 import { usePanel } from "./panel-context";
+import { SimpleView } from "./simple-view";
 import { buildTasks, orderTotalCents, type Task } from "./production";
 import { channelLabel } from "./status";
 import type { Order } from "./types";
@@ -51,21 +52,7 @@ function MakeCard({ task }: { task: Task }) {
             : `Fabricar ${task.toMake} · estoque ${task.inStock}`}
         </span>
       </p>
-      <button
-        className={bigButton}
-        onClick={async () => {
-          let result: Awaited<ReturnType<typeof markMade>> | undefined;
-          await run(
-            async () => {
-              result = await markMade(task.key);
-            },
-            onlyPick ? "Separado." : "Fabricado.",
-            async () => {
-              if (result) await undoMade(task.key, result);
-            },
-          );
-        }}
-      >
+      <button className={bigButton} onClick={() => finishTask(run, task)}>
         {onlyPick ? "✔ Separei" : "✔ Fabriquei"}
       </button>
     </div>
@@ -90,16 +77,7 @@ function PackCard({ order }: { order: Order }) {
       <p className="text-base text-ink-soft">
         Para: {order.destination || "—"} · {order.shipping || "—"}
       </p>
-      <button
-        className={bigButton}
-        onClick={() =>
-          run(
-            () => setStatus(order.id, "ready_to_ship"),
-            `Pedido de ${order.customer_name} embalado.`,
-            () => setStatus(order.id, "to_pack"),
-          )
-        }
-      >
+      <button className={bigButton} onClick={() => finishPack(run, order)}>
         📦 Embalei
       </button>
     </div>
@@ -119,9 +97,9 @@ export function TodayView() {
       </p>
     );
 
-  const complete = mode === "completo";
   const tasks = buildTasks(orders, stock);
   const toPack = orders.filter((o) => o.status === "to_pack");
+  if (mode !== "completo") return <SimpleView tasks={tasks} toPack={toPack} />;
   const ready = orders.filter((o) => o.status === "ready_to_ship");
   const count = (s: Order["status"]) => orders.filter((o) => o.status === s).length;
   const openValue = orders
@@ -144,26 +122,22 @@ export function TodayView() {
     <div>
       <h1 className="font-display text-3xl font-bold text-forest">{greeting()}</h1>
       <p className="mb-4 text-ink-soft">
-        {complete
-          ? "Resumo do dia, juntando Mercado Livre, site e WhatsApp."
-          : "Aqui está o que precisa ser feito hoje."}
+        Resumo do dia, juntando Mercado Livre, site e WhatsApp.
       </p>
 
-      {complete && (
-        <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-          {[
-            [count("pending_payment"), "aguardando pagamento"],
-            [count("to_make"), "pedidos a fabricar"],
-            [ready.length, "prontos para enviar"],
-            [formatBRL(openValue), "em pedidos abertos"],
-          ].map(([n, label]) => (
-            <div key={label} className={card}>
-              <b className="block font-display text-2xl">{n}</b>
-              <span className="text-sm text-ink-soft">{label}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+        {[
+          [count("pending_payment"), "aguardando pagamento"],
+          [count("to_make"), "pedidos a fabricar"],
+          [ready.length, "prontos para enviar"],
+          [formatBRL(openValue), "em pedidos abertos"],
+        ].map(([n, label]) => (
+          <div key={label} className={card}>
+            <b className="block font-display text-2xl">{n}</b>
+            <span className="text-sm text-ink-soft">{label}</span>
+          </div>
+        ))}
+      </div>
 
       <div className="mb-4 grid grid-cols-2 gap-3">
         {tabButton(
@@ -204,7 +178,7 @@ export function TodayView() {
         </Empty>
       )}
 
-      {complete && ready.length > 0 && (
+      {ready.length > 0 && (
         <section className="mt-8">
           <h2 className="mb-3 font-display text-xl font-bold">
             Prontos para postar ({ready.length})
