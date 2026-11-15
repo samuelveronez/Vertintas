@@ -45,8 +45,10 @@ Deno.serve(async (req) => {
   });
 
   if (!res.ok) {
-    console.error("melhor envio", res.status, await res.text());
-    return json({ error: "quote_unavailable" }, 502);
+    const detail = (await res.text()).slice(0, 300);
+    console.error("melhor envio", res.status, detail);
+    // Status e mensagem do Melhor Envio não contêm segredos e aceleram o diagnóstico.
+    return json({ error: "quote_unavailable", upstream: res.status, detail }, 502);
   }
   return json({ options: normalizeOptions(await res.json()) });
 });
