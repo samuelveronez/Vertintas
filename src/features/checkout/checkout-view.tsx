@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { ButtonLink, buttonClass } from "@/components/button";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { totalCents } from "@/features/cart/cart";
+import { findVariant } from "@/features/catalog";
+import { placeSiteOrder } from "@/features/orders/api";
 import { cartActions, useCart } from "@/features/cart/store";
 import { siteConfig } from "@/lib/config";
 import { formatBRL } from "@/lib/format";
@@ -166,6 +168,33 @@ function PixStep({ customer, onBack }: { customer: Customer; onBack: () => void 
   const send = (paid: boolean) =>
     whatsappLink(buildOrderMessage(snapshot, customer, total, orderId, paid));
 
+  // Avisa o painel da loja; se falhar, o pedido segue pelo WhatsApp como antes.
+  const register = () => {
+    const items = snapshot.flatMap((line) => {
+      const found = findVariant(line.variantId);
+      if (!found) return [];
+      const { product, variant } = found;
+      return [
+        {
+          variant_id: variant.id,
+          name: [product.name, variant.color, variant.size].filter(Boolean).join(" · "),
+          qty: line.qty,
+          unit_price_cents: variant.priceCents,
+        },
+      ];
+    });
+    placeSiteOrder({
+      external_ref: orderId,
+      name: customer.name,
+      phone: customer.phone,
+      destination: customer.delivery === "retirada" ? "" : customer.address,
+      shipping:
+        customer.delivery === "retirada" ? "Retirada na fábrica" : "A combinar (frete)",
+      note: customer.note,
+      items,
+    }).catch(() => undefined);
+  };
+
   return (
     <div className="mt-8 max-w-xl space-y-6">
       <p className="text-lg">
@@ -217,7 +246,10 @@ function PixStep({ customer, onBack }: { customer: Customer; onBack: () => void 
           href={send(Boolean(payload))}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => cartActions.clear()}
+          onClick={() => {
+            register();
+            cartActions.clear();
+          }}
           className={`${buttonClass("whatsapp")} w-full`}
         >
           <WhatsAppIcon />{" "}

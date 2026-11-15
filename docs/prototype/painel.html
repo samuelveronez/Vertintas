@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel VerTintas — protótipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#2C372E; --wa:#187A41; --gold:#F5C518; --promo:#D81E3C;
+  --ink:#17201A; --soft:#59645B; --white:#fff; --surface:#F4F6F2; --line:#E3E7E0; --focus:#1D4ED8;
+  --ml:#FFE600;
+}
+*{box-sizing:border-box}
+html{font-size:18px}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--surface);line-height:1.45}
+h1,h2,h3{font-family:Poppins,system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.proto{background:var(--gold);color:var(--ink);font-size:.8rem;text-align:center;padding:4px 8px;font-weight:700}
+header.top{background:var(--forest);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 16px;flex-wrap:wrap}
+header.top .brand{font-family:Poppins;font-weight:700;font-size:1.1rem}
+header.top .who{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:.9rem}
+header.top select,.seg{display:inline-flex;border:1px solid #ffffff66;border-radius:999px;overflow:hidden}.seg button{background:transparent;color:#fff;border:0;padding:8px 16px;min-height:44px;font-weight:700}.seg button[aria-pressed=true]{background:#fff;color:var(--forest)}
+header.top .btn-quiet{min-height:44px}
+.btn-quiet{background:transparent;color:#fff;border:1px solid #ffffff66;border-radius:999px;padding:6px 12px;font-size:.85rem}
+header.top select option{color:#000}
+.stripe{height:4px;background:linear-gradient(90deg,#d81e3c,#f5c518,#2f9e44,#1d6fd8,#8a3fc8,#e8772e)}
+nav.tabs{background:#fff;border-bottom:1px solid var(--line);display:flex;gap:4px;padding:0 12px;overflow-x:auto}
+nav.tabs button{background:none;border:0;border-bottom:4px solid transparent;padding:14px 16px;font-weight:700;color:var(--soft);white-space:nowrap;min-height:56px}
+nav.tabs button[aria-selected=true]{color:var(--forest);border-color:var(--forest)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+.grid{display:grid;gap:12px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.kpi b{display:block;font-family:Poppins;font-size:2rem;line-height:1.1}
+.kpi span{color:var(--soft);font-size:.9rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:0 24px;min-height:56px;font-weight:700;background:var(--forest);color:#fff;font-size:1rem;text-decoration:none}
+.btn.big{min-height:64px;font-size:1.15rem;width:100%}
+.btn.ok{background:var(--wa)}
+.btn.line{background:#fff;color:var(--forest);border:2px solid var(--forest)}
+.btn.sm{min-height:44px;padding:0 16px;font-size:.9rem}
+.badge{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:700;white-space:nowrap}
+.b-ml{background:var(--ml);color:#222}.b-site{background:var(--forest);color:#fff}.b-wa{background:var(--wa);color:#fff}
+.b-warn{background:#FFF1C2;color:#5a4300}.b-ok{background:#DDF3E4;color:#14532d}.b-info{background:#E1ECFB;color:#123a7a}.b-gray{background:#E9ECE7;color:#333}
+h2.sec{font-size:1.25rem;margin:20px 0 10px}
+.hello{font-size:1.5rem;margin:8px 0 4px}
+.sub{color:var(--soft);margin:0 0 14px}
+.bigtabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.bigtabs button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:14px;text-align:left;min-height:84px}
+.bigtabs button[aria-pressed=true]{border-color:var(--forest);background:#EEF3EE}
+.bigtabs b{display:block;font-family:Poppins;font-size:1.8rem;line-height:1}
+.bigtabs span{font-weight:700}
+.task{display:grid;gap:10px}
+.task h3{font-size:1.35rem}
+.task .qty{font-family:Poppins;font-weight:700;font-size:2.2rem;color:var(--forest);line-height:1}
+.task .row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 10px;font-size:.85rem}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;min-height:44px;font-weight:700}
+.filters button[aria-pressed=true]{background:var(--forest);color:#fff;border-color:var(--forest)}
+.orders{display:grid;gap:8px}
+.order{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-align:left;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:64px}
+.order:hover{border-color:var(--forest)}
+.order .n{font-weight:700}
+.order .meta{color:var(--soft);font-size:.88rem}
+.order .tot{font-weight:700;text-align:right}
+@media(max-width:620px){.order{grid-template-columns:1fr auto}.order .ch{grid-column:1/-1}}
+dialog{border:0;border-radius:16px;padding:0;width:min(640px,calc(100vw - 24px));max-height:92vh;box-shadow:0 20px 60px #0004}
+dialog::backdrop{background:#0006}
+.dlg{padding:20px;display:grid;gap:14px}
+.dlg .hd{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.x{background:var(--surface);border:0;border-radius:999px;width:44px;height:44px;font-size:1.3rem}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+td,th{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left}
+td:last-child,th:last-child{text-align:right}
+.steps{display:flex;gap:4px;flex-wrap:wrap}
+.step{flex:1;min-width:84px;text-align:center;font-size:.75rem;padding:6px 4px;border-radius:8px;background:var(--surface);color:var(--soft);font-weight:700}
+.step.done{background:#DDF3E4;color:#14532d}.step.now{background:var(--forest);color:#fff}
+.actions{display:grid;gap:10px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:14px;padding:12px 16px;display:flex;gap:16px;align-items:center;z-index:50;max-width:calc(100vw - 24px)}
+.toast button{background:var(--gold);border:0;border-radius:999px;padding:8px 16px;font-weight:700;min-height:44px}
+.login{max-width:480px;margin:40px auto;text-align:center}
+.login .who{display:grid;gap:12px;margin-top:16px}
+.login .who button{display:flex;align-items:center;gap:14px;text-align:left;background:#fff;border:2px solid var(--line);border-radius:16px;padding:16px;min-height:84px}
+.login .who button:hover{border-color:var(--forest)}
+.login .av{width:52px;height:52px;border-radius:50%;background:var(--forest);color:#fff;display:grid;place-items:center;font-family:Poppins;font-weight:700;font-size:1.3rem;flex:none}
+.note{background:#FFF8DB;border:1px solid #F0DC8A;border-radius:12px;padding:12px 14px;font-size:.9rem}
+.empty{text-align:center;color:var(--soft);padding:32px 12px}
+.two{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#2f9e44;margin-right:6px}
+ul.clean{margin:6px 0 0;padding-left:20px}
+.sr{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<div class="proto">PROTÓTIPO — dados fictícios, nada aqui é salvo. Serve só para validar telas e fluxo.</div>
+<div id="app"></div>
+<div id="toast"></div>
+<dialog id="dlg"></dialog>
+
+<script>
+/* ---------- dados fictícios ---------- */
+const P = {
+  pvaVermelho100:{n:'PVA Vermelho 100 ml',c:1400}, pvaAzul100:{n:'PVA Azul 100 ml',c:1400},
+  pvaAmarelo100:{n:'PVA Amarelo 100 ml',c:1400}, pvaBranco250:{n:'PVA Branco 250 ml',c:2800},
+  pvaPreto500:{n:'PVA Preto 500 ml',c:4000}, ouro100:{n:'Acrílica Metálica Ouro 100 ml',c:1800},
+  cobre100:{n:'Acrílica Metálica Cobre 100 ml',c:1800}, prata100:{n:'Acrílica Metálica Prata 100 ml',c:1800},
+  superCob250:{n:'Super Cobertura Branca 250 ml',c:3200}, kit12:{n:'Kit econômico — 12 PVA 100 ml (cores variadas)',c:14400}
+};
+const CH = {ml:['Mercado Livre','b-ml'], site:['Site','b-site'], wa:['WhatsApp','b-wa']};
+const ST = {pag:'Aguardando pagamento', fab:'A fabricar', emb:'A embalar', env:'Pronto p/ enviar', sent:'Enviado', ent:'Entregue'};
+const FLOW = ['fab','emb','env','sent','ent'];
+const mk = (id,ch,ref,cli,cid,envio,st,when,its,extra={}) => ({id,ch,ref,cli,cid,envio,st,when,
+  items:its.map(([k,q,d])=>({k,q,done:d??(st!=='fab'&&st!=='pag'?true:false)})),pago:st!=='pag',...extra});
+let orders = [
+  mk(1,'ml','2000012345','Marina Alves','Recife/PE','Mercado Envios (etiqueta ML)','fab','Hoje 08:12',[['pvaVermelho100',3],['pvaBranco250',1]]),
+  mk(2,'site','#1042','Carlos Mendes','João Pessoa/PB','Retirada na fábrica','fab','Hoje 09:40',[['ouro100',2],['cobre100',2]],{pagoVia:'Pix confirmado'}),
+  mk(3,'ml','2000012298','Ateliê Flor de Papel','Curitiba/PR','Mercado Envios (etiqueta ML)','fab','Ontem 17:55',[['pvaAzul100',6],['pvaAmarelo100',6],['pvaVermelho100',2]]),
+  mk(4,'wa','WA-31','Dona Lúcia','Campina Grande/PB','Correios (combinar)','pag','Hoje 10:05',[['pvaBranco250',4]]),
+  mk(5,'site','#1043','Joana Prado','São Paulo/SP','Correios','pag','Hoje 10:21',[['kit12',1]]),
+  mk(6,'ml','2000012210','Rafael Souza','Salvador/BA','Mercado Envios (etiqueta ML)','emb','Ontem 14:20',[['superCob250',2]]),
+  mk(7,'ml','2000012187','Paula Dantas','Fortaleza/CE','Mercado Envios (etiqueta ML)','emb','Ontem 11:02',[['pvaPreto500',1],['pvaAzul100',2]]),
+  mk(8,'site','#1041','Beatriz Lima','Natal/RN','Correios','env','Ontem 09:30',[['prata100',3]],{pagoVia:'Pix confirmado'}),
+  mk(9,'ml','2000012102','Eduardo Reis','Belo Horizonte/MG','Mercado Envios (etiqueta ML)','env','2 dias atrás',[['pvaVermelho100',4]]),
+  mk(10,'ml','2000011990','Sandra Oliveira','Recife/PE','Mercado Envios (etiqueta ML)','sent','3 dias atrás',[['pvaBranco250',2]],{rastreio:'ML-BR123456789'}),
+  mk(11,'site','#1039','Fábio Torres','Olinda/PE','Correios','sent','4 dias atrás',[['ouro100',1],['prata100',1]],{rastreio:'BR987654321BR',pagoVia:'Pix confirmado'}),
+  mk(12,'ml','2000011801','Helena Costa','Maceió/AL','Mercado Envios (etiqueta ML)','ent','6 dias atrás',[['pvaAmarelo100',3]])
+];
+const STOCK = {pvaVermelho100:2,pvaAzul100:0,pvaAmarelo100:3,pvaBranco250:4,pvaPreto500:1,ouro100:0,cobre100:1,prata100:2,superCob250:0,kit12:0};
+const TABS = {simples:['hoje'],completo:['hoje','pedidos','estoque','canais']};
+let mode='simples', me=null, tab='hoje', taskTab='fab', fCh='todos', fSt='todos', undoSnap=null, toastTimer=null;
+
+/* ---------- utilidades ---------- */
+const $=s=>document.querySelector(s);
+const brl=c=>(c/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const total=o=>o.items.reduce((s,i)=>s+P[i.k].c*i.q,0);
+const frascos=o=>o.items.reduce((s,i)=>s+i.q,0);
+const chBadge=c=>`<span class="badge ${CH[c][1]}">${CH[c][0]}</span>`;
+const stBadge=o=>{const m={pag:'b-warn',fab:'b-info',emb:'b-info',env:'b-info',sent:'b-gray',ent:'b-ok'};return `<span class="badge ${m[o.st]}">${ST[o.st]}</span>`};
+const count=st=>orders.filter(o=>o.st===st).length;
+function snap(){undoSnap=JSON.stringify({orders,STOCK})}
+function toast(msg,canUndo){
+  clearTimeout(toastTimer);
+  $('#toast').innerHTML=`<div class="toast" role="status"><span>${msg}</span>${canUndo?'<button onclick="undo()">Desfazer</button>':''}</div>`;
+  toastTimer=setTimeout(()=>$('#toast').innerHTML='',canUndo?9000:3500);
+}
+function undo(){if(undoSnap){const d=JSON.parse(undoSnap);orders=d.orders;Object.assign(STOCK,d.STOCK);undoSnap=null;$('#toast').innerHTML='';render()}}
+function advance(o){
+  const i=FLOW.indexOf(o.st); if(i>=0&&i<FLOW.length-1)o.st=FLOW[i+1];
+}
+
+/* ---------- ações ---------- */
+function fabricado(k){
+  snap();
+  const need=orders.filter(o=>o.st==='fab').reduce((a,o)=>a+o.items.filter(i=>i.k===k&&!i.done).reduce((x,i)=>x+i.q,0),0);
+  STOCK[k]=Math.max(0,STOCK[k]-need);
+  orders.filter(o=>o.st==='fab').forEach(o=>{
+    o.items.forEach(i=>{if(i.k===k)i.done=true});
+    if(o.items.every(i=>i.done))o.st='emb';
+  });
+  toast(`${P[k].n} feito.`,true); render();
+}
+function embalado(id){
+  snap(); const o=orders.find(x=>x.id===id); o.st='env';
+  toast(`Pedido de ${o.cli} embalado.`,true); render();
+}
+function confirmarPix(id){
+  snap(); const o=orders.find(x=>x.id===id); o.pago=true; o.pagoVia='Pix confirmado'; o.st='fab';
+  toast('Pagamento confirmado. Pedido liberado para fabricar.',true); closeDlg(); render();
+}
+function enviar(id){
+  snap(); const o=orders.find(x=>x.id===id); o.st='sent'; o.rastreio=o.rastreio||'BR000000000BR';
+  toast('Pedido marcado como enviado.',true); closeDlg(); render();
+}
+function entregue(id){
+  snap(); orders.find(x=>x.id===id).st='ent'; toast('Pedido marcado como entregue.',true); closeDlg(); render();
+}
+function demo(msg){toast(msg+' (no sistema real isto funciona de verdade)')}
+function login(e){e.preventDefault();me=true;tab='hoje';render()}
+function logout(){me=null;render()}
+function setMode(m){mode=m;if(!TABS[m].includes(tab))tab='hoje';render()}
+function ajusta(k,d){STOCK[k]=Math.max(0,STOCK[k]+d);render()}
+function closeDlg(){const d=$('#dlg');if(d.open)d.close()}
+
+/* ---------- telas ---------- */
+function loginView(){
+  return `<div class="login"><h1>VerTintas</h1><p class="sub">Painel de pedidos</p>
+  <form class="card" style="text-align:left;display:grid;gap:12px" onsubmit="login(event)">
+   <label><b>E-mail</b><input type="email" value="exemplo@vertintas.com.br" style="width:100%;font:inherit;padding:14px;border:2px solid var(--line);border-radius:12px;margin-top:4px"></label>
+   <label><b>Senha</b><input type="password" value="senha-exemplo" style="width:100%;font:inherit;padding:14px;border:2px solid var(--line);border-radius:12px;margin-top:4px"></label>
+   <label style="display:flex;gap:10px;align-items:center"><input type="checkbox" checked style="width:24px;height:24px"> Manter conectado neste aparelho</label>
+   <button class="btn big" type="submit">Entrar</button></form>
+  <p class="note" style="margin-top:16px;text-align:left">Cada pessoa tem o seu e-mail e senha. O modo <b>Simples</b> (para fabricar e embalar) ou <b>Completo</b> é escolhido depois de entrar, no topo, e o aparelho lembra a escolha.</p></div>`;
+}
+function shell(content){
+  const names={hoje:'Hoje',pedidos:'Todos os pedidos',estoque:'Estoque',canais:'Canais de venda'}, tb=TABS[mode];
+  return `<header class="top"><span class="brand">VerTintas · Painel</span>
+  <span class="who"><span class="seg" role="group" aria-label="Modo de exibição"><button aria-pressed="${mode==='simples'}" onclick="setMode('simples')">Simples</button><button aria-pressed="${mode==='completo'}" onclick="setMode('completo')">Completo</button></span>
+  <button class="btn-quiet" onclick="me=null;render()">Sair</button></span></header><div class="stripe"></div>
+  ${tb.length>1?`<nav class="tabs" role="tablist">${tb.map(t=>`<button role="tab" aria-selected="${t===tab}" onclick="tab='${t}';render()">${names[t]}${t==='pedidos'&&count('pag')?` <span class="badge b-warn">${count('pag')} sem pagar</span>`:''}</button>`).join('')}</nav>`:''}
+  <main>${content}</main>`;
+}
+
+function hojeView(){
+  const hr=new Date().getHours(), sd=hr<12?'Bom dia':hr<18?'Boa tarde':'Boa noite', simples=mode==='simples';
+  const nFab=orders.filter(o=>o.st==='fab').reduce((s,o)=>s+o.items.filter(i=>!i.done).reduce((a,i)=>a+i.q,0),0);
+  const head=`<h1 class="hello">${sd}!</h1><p class="sub">${simples?'Aqui está o que precisa ser feito hoje.':'Resumo do dia, juntando Mercado Livre, site e WhatsApp.'}</p>`;
+  const kp=simples?'':`<div class="grid kpis" style="margin-bottom:8px">
+    <div class="card kpi"><b>${count('pag')}</b><span>aguardando pagamento</span></div>
+    <div class="card kpi"><b>${count('fab')}</b><span>pedidos a fabricar</span></div>
+    <div class="card kpi"><b>${count('env')}</b><span>prontos para enviar</span></div>
+    <div class="card kpi"><b>${orders.filter(o=>o.st!=='pag').length?brl(orders.filter(o=>o.pago&&o.st!=='ent').reduce((s,o)=>s+total(o),0)):'—'}</b><span>em pedidos abertos</span></div></div>`;
+  const tabs=`<div class="bigtabs">
+    <button aria-pressed="${taskTab==='fab'}" onclick="taskTab='fab';render()"><b>${nFab}</b><span>frascos para fabricar</span></button>
+    <button aria-pressed="${taskTab==='emb'}" onclick="taskTab='emb';render()"><b>${count('emb')}</b><span>pedidos para embalar</span></button></div>`;
+  return head+kp+tabs+(taskTab==='fab'?fabricarView():embalarView())+(!simples?envioView():'');
+}
+function fabricarView(){
+  const agg={};
+  orders.filter(o=>o.st==='fab').forEach(o=>o.items.filter(i=>!i.done).forEach(i=>{
+    (agg[i.k]=agg[i.k]||{q:0,ped:[]}); agg[i.k].q+=i.q; agg[i.k].ped.push({id:o.id,q:i.q,cli:o.cli,ch:o.ch});}));
+  const ks=Object.keys(agg);
+  if(!ks.length)return `<div class="card empty"><b>Tudo pronto por enquanto. 🎉</b><br>Quando chegar pedido novo, ele aparece aqui.</div>`;
+  return `<p class="sub">Pedidos pagos de todos os canais, somados. O que já está no estoque é só separar; o resto, fabricar.</p><div class="grid two">`+ks.map(k=>{
+    const q=agg[k].q, e=STOCK[k], falta=Math.max(0,q-e);
+    return `<div class="card task"><div class="row"><h3>${P[k].n}</h3><span class="qty">${q}<small style="font-size:.9rem;font-weight:400"> pedidos</small></span></div>
+   <div class="chips">${agg[k].ped.map(p=>`<span class="chip">${CH[p.ch][0]} · ${p.cli} · ${p.q}</span>`).join('')}</div>
+   <div><span class="badge ${falta?'b-warn':'b-ok'}" style="font-size:.95rem">${falta?`Fabricar ${falta} · estoque ${e}`:`Tem no estoque (${e}) · só separar`}</span></div>
+   <button class="btn big ok" onclick="fabricado('${k}')">${falta?'✔ Fabriquei':'✔ Separei'}</button></div>`}).join('')+`</div>`;
+}
+function estoqueView(){
+  return `<h1 class="hello">Estoque</h1><p class="sub">Frascos prontos. Ao fabricar ou separar um pedido, o estoque é atualizado sozinho; aqui você corrige se precisar.</p>
+  <div class="card"><table><thead><tr><th>Produto</th><th style="text-align:right">Em estoque</th></tr></thead><tbody>${Object.keys(P).map(k=>`<tr><td>${P[k].n}</td><td><span style="display:inline-flex;align-items:center;gap:8px"><button class="btn sm line" aria-label="Menos um" onclick="ajusta('${k}',-1)">−</button><b style="min-width:2ch;text-align:center">${STOCK[k]}</b><button class="btn sm line" aria-label="Mais um" onclick="ajusta('${k}',1)">+</button></span></td></tr>`).join('')}</tbody></table></div>
+  <p class="note" style="margin-top:12px">Na fase 2 este número também atualiza o anúncio do Mercado Livre.</p>`;
+}
+function embalarView(){
+  const l=orders.filter(o=>o.st==='emb');
+  if(!l.length)return `<div class="card empty"><b>Nada para embalar agora.</b><br>Os pedidos aparecem aqui depois de fabricados.</div>`;
+  return `<p class="sub">Tudo fabricado. Separe, embale e toque em <b>Embalei</b>.</p><div class="grid two">`+l.map(o=>`
+   <div class="card task"><div class="row"><h3>${o.cli}</h3>${chBadge(o.ch)}</div>
+   <ul class="clean">${o.items.map(i=>`<li><b>${i.q}×</b> ${P[i.k].n}</li>`).join('')}</ul>
+   <div class="meta sub" style="margin:0">Para: ${o.cid} · ${o.envio}</div>
+   <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm line" onclick="demo('Abre a etiqueta para imprimir')">🖨 Etiqueta</button></div>
+   <button class="btn big ok" onclick="embalado(${o.id})">📦 Embalei</button></div>`).join('')+`</div>`;
+}
+function envioView(){
+  const l=orders.filter(o=>o.st==='env');
+  if(!l.length)return '';
+  return `<h2 class="sec">Prontos para postar (${l.length})</h2><div class="orders">${l.map(orderRow).join('')}</div>`;
+}
+function orderRow(o){
+  return `<button class="order" onclick="openOrder(${o.id})"><span class="ch">${chBadge(o.ch)}</span>
+  <span><span class="n">${o.cli}</span><br><span class="meta">${o.ref} · ${o.when} · ${frascos(o)} frasco(s) · ${o.cid}</span></span>
+  <span class="tot">${brl(total(o))}<br>${stBadge(o)}</span></button>`;
+}
+function pedidosView(){
+  const fl=orders.filter(o=>(fCh==='todos'||o.ch===fCh)&&(fSt==='todos'||o.st===fSt));
+  const chips=(cur,set,opts)=>`<div class="filters">${opts.map(([k,t])=>`<button aria-pressed="${cur===k}" onclick="${set}='${k}';render()">${t}</button>`).join('')}</div>`;
+  return `<h1 class="hello">Todos os pedidos</h1><p class="sub">Mercado Livre, site e WhatsApp na mesma lista.</p>
+  ${chips(fCh,'fCh',[['todos','Todos os canais'],['ml','Mercado Livre'],['site','Site'],['wa','WhatsApp']])}
+  ${chips(fSt,'fSt',[['todos','Qualquer situação'],...Object.entries(ST)])}
+  <div class="orders">${fl.length?fl.map(orderRow).join(''):'<div class="card empty">Nenhum pedido com esses filtros.</div>'}</div>
+  <p style="margin-top:14px"><button class="btn sm line" onclick="demo('Abre o formulário de pedido manual')">+ Lançar pedido do WhatsApp</button></p>`;
+}
+function openOrder(id){
+  const o=orders.find(x=>x.id===id), d=$('#dlg'), i=FLOW.indexOf(o.st);
+  const can=mode==='completo';
+  let primary='';
+  if(o.st==='pag'&&can&&o.ch!=='ml')primary=`<button class="btn big ok" onclick="confirmarPix(${o.id})">✔ Confirmar pagamento recebido</button>`;
+  if(o.st==='env'&&can)primary=`<button class="btn big ok" onclick="enviar(${o.id})">🚚 Marcar como enviado</button>`;
+  if(o.st==='sent'&&can&&o.ch!=='ml')primary=`<button class="btn big ok" onclick="entregue(${o.id})">✔ Marcar como entregue</button>`;
+  const ml=o.ch==='ml';
+  d.innerHTML=`<div class="dlg"><div class="hd"><div><h2>${o.cli}</h2><div style="margin-top:6px">${chBadge(o.ch)} ${stBadge(o)} <span class="meta sub">${o.ref} · ${o.when}</span></div></div><button class="x" aria-label="Fechar" onclick="closeDlg()">✕</button></div>
+  ${o.st==='pag'?'':`<div class="steps">${FLOW.map((s,n)=>`<div class="step ${n<i?'done':n===i?'now':''}">${ST[s]}</div>`).join('')}</div>`}
+  ${o.st==='pag'?`<div class="note">Aguardando pagamento${ml?' (o Mercado Livre libera sozinho)':' — conferir o Pix no banco e confirmar abaixo'}. Só entra na fabricação depois de pago.</div>`:''}
+  <table><thead><tr><th>Item</th><th>Qtd</th><th>Valor</th></tr></thead><tbody>${o.items.map(x=>`<tr><td>${P[x.k].n}</td><td>${x.q}</td><td>${brl(P[x.k].c*x.q)}</td></tr>`).join('')}<tr><td colspan="2"><b>Total</b></td><td><b>${brl(total(o))}</b></td></tr></tbody></table>
+  <div class="card" style="padding:12px"><b>Entrega:</b> ${o.envio}<br><b>Destino:</b> ${o.cid}${o.rastreio?`<br><b>Rastreio:</b> ${o.rastreio}`:''}${ml?'<br><span class="meta sub">Endereço completo e etiqueta ficam no Mercado Livre.</span>':''}</div>
+  <div class="actions">${primary}
+   ${can?`<div style="display:flex;gap:8px;flex-wrap:wrap">
+   ${ml?`<button class="btn sm line" onclick="demo('Abre o pedido no Mercado Livre')">Abrir no Mercado Livre</button><button class="btn sm line" onclick="demo('Abre a etiqueta do Mercado Envios')">🖨 Etiqueta ML</button>`
+   :`<button class="btn sm line" onclick="demo('Abre o WhatsApp com mensagem pronta')">💬 Falar no WhatsApp</button>`}
+   </div>`:''}</div></div>`;
+  d.showModal();
+}
+function canaisView(){
+  return `<h1 class="hello">Canais de venda</h1><p class="sub">De onde os pedidos chegam.</p><div class="grid two">
+  <div class="card"><h3>${chBadge('ml')} Mercado Livre</h3><p><span class="dot"></span><b>Conectado</b> (simulado)<br><span class="meta sub">Última verificação: há 2 minutos · 8 pedidos importados esta semana</span></p>
+   <ul class="clean"><li>Novos pedidos entram sozinhos nesta lista</li><li>Etiquetas e envio continuam no Mercado Livre</li><li>Fase 1: só <b>ler</b> pedidos. Estoque único fica para a fase 2</li></ul>
+   <p><button class="btn sm line" onclick="demo('Atualiza pedidos do Mercado Livre')">Atualizar agora</button></p></div>
+  <div class="card"><h3>${chBadge('site')} Site</h3><p><span class="dot"></span><b>Funcionando</b><br><span class="meta sub">Pix manual: alguém confere no banco e confirma aqui</span></p>
+   <ul class="clean"><li>Hoje o pedido do site chega por WhatsApp</li><li>Com o painel, chega direto nesta lista</li><li>Depois: Pix com confirmação automática</li></ul></div>
+  <div class="card"><h3>${chBadge('wa')} WhatsApp</h3><p><b>Lançamento manual</b><br><span class="meta sub">Sem integração: a irmã digita o pedido em 1 minuto</span></p>
+   <p><button class="btn sm line" onclick="demo('Abre o formulário de pedido manual')">+ Novo pedido manual</button></p></div></div>`;
+}
+
+function render(){
+  const app=$('#app');
+  if(!me){app.innerHTML=loginView();return}
+  const v=tab==='pedidos'?pedidosView():tab==='canais'?canaisView():tab==='estoque'?estoqueView():hojeView();
+  app.innerHTML=shell(v);
+  const d=$('#dlg'); if(d.open){/* mantém aberto */}
+}
+render();
+</script>
+</body>
+</html>

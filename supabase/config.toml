@@ -1,0 +1,2 @@
+[functions.ml]
+verify_jwt = false
