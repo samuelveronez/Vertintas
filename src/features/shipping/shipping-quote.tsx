@@ -64,6 +64,17 @@ export function ShippingQuote({ lines }: { lines: CartLine[] }) {
             : "Informe um CEP com 8 dígitos."}
         </p>
       )}
+      {status === "error" && isCep(cep) && (
+        <label className="mt-2 flex cursor-pointer items-center gap-3 rounded-xl border-2 border-line bg-white p-3 text-sm has-checked:border-forest">
+          <input
+            type="radio"
+            name="shipping"
+            checked={choice !== undefined && !choice.option}
+            onChange={() => setShippingChoice({ cep: normalizeCep(cep), signature })}
+          />
+          <span>Combinar o frete pelo WhatsApp</span>
+        </label>
+      )}
       {options?.length === 0 && (
         <p className="mt-2 text-sm">Nenhum envio disponível para esse CEP.</p>
       )}
@@ -79,7 +90,7 @@ export function ShippingQuote({ lines }: { lines: CartLine[] }) {
               <input
                 type="radio"
                 name="shipping"
-                checked={choice?.option.id === o.id}
+                checked={choice?.option?.id === o.id}
                 onChange={() =>
                   setShippingChoice({ cep: normalizeCep(cep), signature, option: o })
                 }

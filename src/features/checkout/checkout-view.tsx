@@ -10,7 +10,7 @@ import { cartActions, useCart } from "@/features/cart/store";
 import { cartSignature, shippingEnabled } from "@/features/shipping/shipping";
 import { useShippingChoice } from "@/features/shipping/store";
 import { siteConfig } from "@/lib/config";
-import { formatDeadline, type ShippingChoice } from "@/features/shipping/shipping";
+import { formatDeadline, type QuotedShipping } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 import { buildPixPayload } from "@/lib/pix";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -24,8 +24,9 @@ export function CheckoutView() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [delivery, setDelivery] = useState<Customer["delivery"]>("entrega");
   const saved = useShippingChoice();
-  const shipping = saved?.signature === cartSignature(lines) ? saved : undefined;
-  const needsQuote = shippingEnabled && delivery === "entrega" && !shipping;
+  const choice = saved?.signature === cartSignature(lines) ? saved : undefined;
+  const quoted = choice?.option ? { ...choice, option: choice.option } : undefined;
+  const needsQuote = shippingEnabled && delivery === "entrega" && !choice;
 
   if (lines.length === 0 && !customer) {
     return (
@@ -42,7 +43,7 @@ export function CheckoutView() {
     return (
       <PixStep
         customer={customer}
-        shipping={customer.delivery === "entrega" ? shipping : undefined}
+        shipping={customer.delivery === "entrega" ? quoted : undefined}
         onBack={() => setCustomer(undefined)}
       />
     );
@@ -139,16 +140,24 @@ export function CheckoutView() {
         Observações <span className="font-normal">(opcional)</span>
         <textarea name="note" rows={2} className={input} />
       </label>
-      {delivery === "entrega" && shipping && (
+      {delivery === "entrega" && quoted && (
         <p className="rounded-xl bg-surface p-3 text-sm">
           Frete:{" "}
           <strong>
-            {shipping.option.company} {shipping.option.name}
+            {quoted.option.company} {quoted.option.name}
           </strong>{" "}
-          · {formatDeadline(shipping.option)} · {formatBRL(shipping.option.priceCents)}{" "}
-          (CEP {shipping.cep}).{" "}
+          · {formatDeadline(quoted.option)} · {formatBRL(quoted.option.priceCents)} (CEP{" "}
+          {quoted.cep}).{" "}
           <Link href="/carrinho/" className="underline">
             Alterar
+          </Link>
+        </p>
+      )}
+      {delivery === "entrega" && choice && !choice.option && (
+        <p className="rounded-xl bg-surface p-3 text-sm">
+          Frete combinado pelo WhatsApp (CEP {choice.cep}).{" "}
+          <Link href="/carrinho/" className="underline">
+            Calcular de novo
           </Link>
         </p>
       )}
@@ -169,7 +178,7 @@ export function CheckoutView() {
         Continuar para o Pix ·{" "}
         {formatBRL(
           totalCents(lines) +
-            (delivery === "entrega" ? (shipping?.option.priceCents ?? 0) : 0),
+            (delivery === "entrega" ? (quoted?.option.priceCents ?? 0) : 0),
         )}
       </button>
       <p className="text-xs text-ink-soft">
@@ -189,7 +198,7 @@ function PixStep({
   onBack,
 }: {
   customer: Customer;
-  shipping?: ShippingChoice;
+  shipping?: QuotedShipping;
   onBack: () => void;
 }) {
   const lines = useCart();

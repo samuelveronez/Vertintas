@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CartLine } from "@/features/cart/cart";
 import { findVariant } from "@/features/catalog";
-import { formatDeadline, type ShippingChoice } from "@/features/shipping/shipping";
+import { formatDeadline, type QuotedShipping } from "@/features/shipping/shipping";
 import { formatBRL } from "@/lib/format";
 
 export const customerSchema = z
@@ -31,7 +31,7 @@ export function buildOrderMessage(
   totalCents: number,
   orderId: string,
   paidWithPix: boolean,
-  shipping?: ShippingChoice,
+  shipping?: QuotedShipping,
 ): string {
   const items = lines.flatMap((line) => {
     const found = findVariant(line.variantId);

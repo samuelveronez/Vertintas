@@ -14,8 +14,14 @@ const optionSchema = z.object({
 
 export type ShippingOption = z.infer<typeof optionSchema>;
 
-/** Frete escolhido; só vale enquanto o carrinho tiver a mesma `signature` da cotação. */
-export type ShippingChoice = { cep: string; signature: string; option: ShippingOption };
+/**
+ * Frete escolhido; só vale enquanto o carrinho tiver a mesma `signature` da cotação.
+ * Sem `option`, o cliente optou por combinar o frete pelo WhatsApp (cotação indisponível).
+ */
+export type ShippingChoice = { cep: string; signature: string; option?: ShippingOption };
+
+/** Escolha com preço e prazo cotados. */
+export type QuotedShipping = Required<ShippingChoice>;
 
 export const normalizeCep = (v: string) => v.replace(/\D/g, "");
 export const isCep = (v: string) => /^\d{8}$/.test(normalizeCep(v));
