@@ -13,8 +13,8 @@ import { usePanel } from "./panel-context";
 import { orderTotalCents, type Task } from "./production";
 import type { Order } from "./types";
 
-const card = "space-y-3 rounded-2xl bg-white p-4 shadow-card ring-1 ring-line";
-const action = `${bigButton} min-h-12 text-lg`;
+const card = "space-y-2 rounded-xl bg-white p-3 shadow-card ring-1 ring-line";
+const action = `${bigButton} min-h-10 text-base`;
 
 function Column({
   title,
@@ -28,10 +28,10 @@ function Column({
   children: React.ReactNode;
 }) {
   return (
-    <section className="space-y-3 rounded-3xl bg-[#eef3ee] p-3 md:min-w-56 md:flex-1">
-      <h2 className="flex items-center justify-between px-1 font-display text-xl font-bold text-forest">
+    <section className="space-y-2 rounded-2xl bg-[#eef3ee] p-2 md:min-w-56 md:flex-1">
+      <h2 className="flex items-center justify-between px-1 font-display text-lg font-bold text-forest">
         {title}
-        <span className="grid min-w-9 place-items-center rounded-full bg-forest px-2 py-0.5 text-base text-white">
+        <span className="grid min-w-9 place-items-center rounded-full bg-forest px-2 py-0.5 text-sm text-white">
           {count}
         </span>
       </h2>
@@ -61,12 +61,12 @@ export function SimpleView({
   const { run } = usePanel();
 
   return (
-    <div className="flex flex-col gap-4 text-base md:flex-row md:items-start md:overflow-x-auto md:pb-2">
+    <div className="flex flex-col gap-3 text-sm md:flex-row md:items-start md:overflow-x-auto md:pb-2">
       <Column title="Pagamento" count={toConfirm.length} empty="Nada para confirmar.">
         {toConfirm.map((o) => (
           <article key={o.id} className={card}>
             <h3 className="font-bold leading-tight">{o.customer_name}</h3>
-            <p className="font-display text-2xl font-bold text-forest">
+            <p className="font-display text-xl font-bold text-forest">
               {formatBRL(orderTotalCents(o))}
             </p>
             <button className={action} onClick={() => confirmPayment(run, o)}>
@@ -81,7 +81,7 @@ export function SimpleView({
           <article key={t.key} className={card}>
             <h3 className="font-bold leading-tight">{t.name}</h3>
             {t.toMake > 0 && (
-              <p className="font-display text-2xl font-bold text-forest">
+              <p className="font-display text-xl font-bold text-forest">
                 Fabricar {t.toMake}
               </p>
             )}
@@ -101,7 +101,7 @@ export function SimpleView({
         {toPack.map((o) => (
           <article key={o.id} className={card}>
             <h3 className="font-bold leading-tight">{o.customer_name}</h3>
-            <ul className="space-y-1 rounded-xl bg-[#eef3ee] p-3">
+            <ul className="space-y-0.5 rounded-lg bg-[#eef3ee] p-2">
               {o.order_items.map((i) => (
                 <li key={i.id}>
                   <b>{i.qty}×</b> {i.name}
