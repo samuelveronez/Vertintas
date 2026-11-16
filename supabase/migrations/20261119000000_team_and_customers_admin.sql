@@ -61,6 +61,11 @@ revoke execute on function public.staff_list() from public;
 revoke execute on function public.staff_add(text, text) from public;
 revoke execute on function public.staff_remove(uuid) from public;
 revoke execute on function public.customers_overview() from public;
+-- O Supabase concede execute a anon por padrão; estas funções são só para quem está logado.
+revoke execute on function public.staff_list() from anon;
+revoke execute on function public.staff_add(text, text) from anon;
+revoke execute on function public.staff_remove(uuid) from anon;
+revoke execute on function public.customers_overview() from anon;
 grant execute on function public.staff_list() to authenticated;
 grant execute on function public.staff_add(text, text) to authenticated;
 grant execute on function public.staff_remove(uuid) to authenticated;
