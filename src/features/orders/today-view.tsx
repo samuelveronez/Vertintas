@@ -10,7 +10,7 @@ import { buildTasks, orderTotalCents, type Task } from "./production";
 import { channelLabel } from "./status";
 import type { Order } from "./types";
 
-const card = "space-y-3 rounded-card border border-line bg-white p-4 shadow-card";
+const card = "space-y-2 rounded-card border border-line bg-white p-3 shadow-card";
 
 function greeting() {
   const h = new Date().getHours();
@@ -27,8 +27,8 @@ function MakeCard({ task }: { task: Task }) {
   return (
     <div className={card}>
       <div className="flex items-start justify-between gap-3">
-        <h3 className="font-display text-xl font-bold">{task.name}</h3>
-        <span className="shrink-0 text-right font-display text-3xl font-bold leading-none text-forest">
+        <h3 className="font-display text-lg font-bold">{task.name}</h3>
+        <span className="shrink-0 text-right font-display text-2xl font-bold leading-none text-forest">
           {task.qty}
           <small className="block text-sm font-normal text-ink-soft">nos pedidos</small>
         </span>
@@ -45,7 +45,7 @@ function MakeCard({ task }: { task: Task }) {
       </ul>
       <p>
         <span
-          className={`rounded-full px-3 py-1 text-base font-bold ${onlyPick ? "bg-[#ddf3e4] text-[#14532d]" : "bg-[#fff1c2] text-[#5a4300]"}`}
+          className={`rounded-full px-2.5 py-0.5 text-sm font-bold ${onlyPick ? "bg-[#ddf3e4] text-[#14532d]" : "bg-[#fff1c2] text-[#5a4300]"}`}
         >
           {onlyPick
             ? `Tem no estoque (${task.inStock}): só separar`
@@ -64,7 +64,7 @@ function PackCard({ order }: { order: Order }) {
   return (
     <div className={card}>
       <div className="flex items-start justify-between gap-3">
-        <h3 className="font-display text-xl font-bold">{order.customer_name}</h3>
+        <h3 className="font-display text-lg font-bold">{order.customer_name}</h3>
         <ChannelBadge channel={order.channel} />
       </div>
       <ul className="list-disc pl-5">
@@ -127,16 +127,16 @@ export function TodayView() {
       type="button"
       aria-pressed={tab === id}
       onClick={() => setTab(id)}
-      className={`min-h-20 rounded-2xl border-2 p-3.5 text-left ${tab === id ? "border-forest bg-[#eef3ee]" : "border-line bg-white"}`}
+      className={`min-h-16 rounded-xl border-2 p-3 text-left ${tab === id ? "border-forest bg-[#eef3ee]" : "border-line bg-white"}`}
     >
-      <b className="block font-display text-3xl leading-none">{n}</b>
+      <b className="block font-display text-2xl leading-none">{n}</b>
       <span className="font-bold">{label}</span>
     </button>
   );
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-bold text-forest">{greeting()}</h1>
+      <h1 className="font-display text-2xl font-bold text-forest">{greeting()}</h1>
       <p className="mb-4 text-ink-soft">
         Resumo do dia, juntando Mercado Livre, site e WhatsApp.
       </p>
@@ -149,7 +149,7 @@ export function TodayView() {
           [formatBRL(openValue), "em pedidos abertos"],
         ].map(([n, label]) => (
           <div key={label} className={card}>
-            <b className="block font-display text-2xl">{n}</b>
+            <b className="block font-display text-xl">{n}</b>
             <span className="text-sm text-ink-soft">{label}</span>
           </div>
         ))}
@@ -196,7 +196,7 @@ export function TodayView() {
 
       {ready.length > 0 && (
         <section className="mt-8">
-          <h2 className="mb-3 font-display text-xl font-bold">
+          <h2 className="mb-2 font-display text-lg font-bold">
             Prontos para postar ({ready.length})
           </h2>
           <div className="space-y-2">

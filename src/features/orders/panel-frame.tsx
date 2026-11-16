@@ -86,7 +86,7 @@ function Body({ children }: { children: React.ReactNode }) {
   const { mode } = usePanel();
   return (
     <div
-      className={`mx-auto px-4 py-5 text-lg ${mode === "completo" ? "max-w-5xl" : "max-w-[110rem]"}`}
+      className={`mx-auto px-4 py-4 text-base ${mode === "completo" ? "max-w-5xl" : "max-w-[110rem]"}`}
     >
       {children}
     </div>
@@ -95,6 +95,7 @@ function Body({ children }: { children: React.ReactNode }) {
 
 function Nav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { mode, setMode } = usePanel();
   const visible = tabs.filter((t) => t.modes.includes(mode));
 
@@ -113,8 +114,12 @@ function Nav() {
                 key={m}
                 type="button"
                 aria-pressed={mode === m}
-                onClick={() => setMode(m)}
-                className={`min-h-11 px-4 font-bold capitalize ${mode === m ? "bg-white text-forest" : ""}`}
+                onClick={() => {
+                  setMode(m);
+                  // As outras seções só existem no Completo; no Simples, volta para o quadro.
+                  if (m === "simples") router.push("/painel/");
+                }}
+                className={`min-h-9 px-4 text-sm font-bold capitalize ${mode === m ? "bg-white text-forest" : ""}`}
               >
                 {m}
               </button>
@@ -122,7 +127,7 @@ function Nav() {
           </div>
           <button
             type="button"
-            className="min-h-11 rounded-full border border-white/40 px-4 text-sm"
+            className="min-h-9 rounded-full border border-white/40 px-4 text-sm"
             onClick={() => supabase?.auth.signOut()}
           >
             Sair
@@ -140,7 +145,7 @@ function Nav() {
               key={t.href}
               href={t.href}
               aria-current={pathname === t.href ? "page" : undefined}
-              className={`min-h-14 whitespace-nowrap border-b-4 px-4 py-4 font-bold ${
+              className={`min-h-11 whitespace-nowrap border-b-4 px-4 py-2.5 text-sm font-bold ${
                 pathname === t.href
                   ? "border-forest text-forest"
                   : "border-transparent text-ink-soft"

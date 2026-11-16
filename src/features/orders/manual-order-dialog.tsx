@@ -15,7 +15,7 @@ const options = products.flatMap((p) =>
   })),
 );
 
-const field = "mt-1 w-full rounded-xl border-2 border-line p-3 text-lg font-normal";
+const field = "mt-1 w-full rounded-xl border-2 border-line p-2.5 text-base font-normal";
 
 type Line = { variantId: string; qty: number };
 
@@ -62,7 +62,7 @@ export function ManualOrderDialog({ onClose }: { onClose: () => void }) {
   return (
     <Dialog onClose={onClose}>
       <div className="flex items-start justify-between gap-3">
-        <h2 className="font-display text-2xl font-bold">Novo pedido do WhatsApp</h2>
+        <h2 className="font-display text-xl font-bold">Novo pedido do WhatsApp</h2>
         <CloseButton onClose={onClose} />
       </div>
       <form onSubmit={submit} className="space-y-3">
@@ -108,7 +108,7 @@ export function ManualOrderDialog({ onClose }: { onClose: () => void }) {
                 onChange={(e) =>
                   patch(i, { qty: Math.max(1, Number(e.target.value) || 1) })
                 }
-                className="w-20 rounded-xl border-2 border-line p-3 text-lg"
+                className="w-20 rounded-xl border-2 border-line p-2.5 text-base"
               />
               {lines.length > 1 && (
                 <button

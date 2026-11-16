@@ -19,7 +19,7 @@ export function StockView() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-bold text-forest">Estoque</h1>
+      <h1 className="font-display text-2xl font-bold text-forest">Estoque</h1>
       <p className="mb-4 text-ink-soft">
         Frascos prontos. Ao fabricar ou separar um pedido o estoque baixa sozinho; aqui
         você corrige ou soma o que acabou de produzir.
@@ -44,15 +44,15 @@ export function StockView() {
               <span className="flex items-center gap-2">
                 <button
                   aria-label={`Menos um ${r.label}`}
-                  className="size-11 rounded-full border-2 border-forest text-xl font-bold text-forest"
+                  className="size-9 rounded-full border-2 border-forest text-lg font-bold text-forest"
                   onClick={() => change(r.id, -1)}
                 >
                   −
                 </button>
-                <b className="min-w-[2.5ch] text-center text-xl">{stock[r.id] ?? 0}</b>
+                <b className="min-w-[2.5ch] text-center text-lg">{stock[r.id] ?? 0}</b>
                 <button
                   aria-label={`Mais um ${r.label}`}
-                  className="size-11 rounded-full border-2 border-forest text-xl font-bold text-forest"
+                  className="size-9 rounded-full border-2 border-forest text-lg font-bold text-forest"
                   onClick={() => change(r.id, 1)}
                 >
                   +

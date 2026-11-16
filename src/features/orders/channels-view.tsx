@@ -17,7 +17,7 @@ import {
 import { ChannelBadge, formatWhen } from "./order-ui";
 import { usePanel } from "./panel-context";
 
-const card = "space-y-2 rounded-card border border-line bg-white p-4 shadow-card";
+const card = "space-y-2 rounded-card border border-line bg-white p-3 shadow-card";
 
 function PickupCard() {
   const { run } = usePanel();
@@ -39,7 +39,7 @@ function PickupCard() {
 
   return (
     <section className={card}>
-      <h2 className="font-display text-xl font-bold">Retirada na fábrica</h2>
+      <h2 className="font-display text-lg font-bold">Retirada na fábrica</h2>
       <p>
         <b>{enabled === null ? "…" : enabled ? "● Ligada" : "○ Desligada"}</b>
         <br />
@@ -50,7 +50,7 @@ function PickupCard() {
         </span>
       </p>
       <button
-        className={`${buttonClass(enabled ? "outline" : "primary")} min-h-12`}
+        className={`${buttonClass(enabled ? "outline" : "primary")} min-h-10`}
         disabled={enabled === null}
         onClick={toggle}
       >
@@ -70,7 +70,7 @@ const pixSchema = z.object({
     .max(15, "Cidade com até 15 letras."),
 });
 
-const pixInput = "mt-1 min-h-12 w-full rounded-xl border-2 border-line bg-white px-4";
+const pixInput = "mt-1 min-h-10 w-full rounded-xl border-2 border-line bg-white px-4";
 
 function PixCard() {
   const { run, notify } = usePanel();
@@ -106,7 +106,7 @@ function PixCard() {
 
   return (
     <section className={card}>
-      <h2 className="font-display text-xl font-bold">Pix da loja</h2>
+      <h2 className="font-display text-lg font-bold">Pix da loja</h2>
       <p className="text-base text-ink-soft">
         É o Pix que o cliente vê ao fechar o pedido no site. Confira a chave com atenção:
         o dinheiro cai nela.
@@ -123,7 +123,7 @@ function PixCard() {
           "Como aparece para o cliente, até 25 letras.",
         )}
         {field("city", "Cidade", "Até 15 letras, sem acento.")}
-        <button className={`${buttonClass()} min-h-12`} disabled={!loaded}>
+        <button className={`${buttonClass()} min-h-10`} disabled={!loaded}>
           Salvar Pix
         </button>
       </form>
@@ -164,7 +164,7 @@ function WhatsappMessageCard() {
 
   return (
     <section className={card}>
-      <h2 className="font-display text-xl font-bold">Mensagem do WhatsApp</h2>
+      <h2 className="font-display text-lg font-bold">Mensagem do WhatsApp</h2>
       <p className="text-base text-ink-soft">
         Texto que o cliente envia ao fechar o pedido no site. Os dados abaixo entram
         sozinhos no lugar de cada palavra entre chaves:
@@ -194,11 +194,11 @@ function WhatsappMessageCard() {
         className="min-h-32 w-full rounded-xl border-2 border-line bg-white px-4 py-3"
       />
       <div className="flex flex-wrap gap-2">
-        <button className={`${buttonClass()} min-h-12`} disabled={!loaded} onClick={save}>
+        <button className={`${buttonClass()} min-h-10`} disabled={!loaded} onClick={save}>
           Salvar mensagem
         </button>
         <button
-          className={`${buttonClass("outline")} min-h-12`}
+          className={`${buttonClass("outline")} min-h-10`}
           disabled={!loaded}
           onClick={() => setText(DEFAULT_ORDER_TEMPLATE)}
         >
@@ -235,11 +235,11 @@ export function ChannelsView() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-bold text-forest">Canais de venda</h1>
+      <h1 className="font-display text-2xl font-bold text-forest">Canais de venda</h1>
       <p className="mb-4 text-ink-soft">De onde os pedidos chegam.</p>
       <div className="grid gap-3 md:grid-cols-2">
         <section className={card}>
-          <h2 className="flex items-center gap-2 font-display text-xl font-bold">
+          <h2 className="flex items-center gap-2 font-display text-lg font-bold">
             <ChannelBadge channel="ml" /> Mercado Livre
           </h2>
           {ml?.connected ? (
@@ -280,7 +280,7 @@ export function ChannelsView() {
           </div>
         </section>
         <section className={card}>
-          <h2 className="flex items-center gap-2 font-display text-xl font-bold">
+          <h2 className="flex items-center gap-2 font-display text-lg font-bold">
             <ChannelBadge channel="site" /> Site
           </h2>
           <p>
@@ -292,7 +292,7 @@ export function ChannelsView() {
           </p>
         </section>
         <section className={card}>
-          <h2 className="flex items-center gap-2 font-display text-xl font-bold">
+          <h2 className="flex items-center gap-2 font-display text-lg font-bold">
             <ChannelBadge channel="wa" /> WhatsApp
           </h2>
           <p>

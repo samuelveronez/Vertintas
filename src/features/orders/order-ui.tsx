@@ -9,7 +9,7 @@ import { orderTotalCents, unitCount } from "./production";
 import { channelClass, channelLabel, flow, statusClass, statusLabel } from "./status";
 import type { Channel, Order, Status } from "./types";
 
-export const bigButton = `${buttonClass("whatsapp")} min-h-16 w-full text-xl`;
+export const bigButton = `${buttonClass("whatsapp")} min-h-11 w-full text-base`;
 
 export function ChannelBadge({ channel }: { channel: Channel }) {
   return (
@@ -55,7 +55,7 @@ export function OrderRow({
     <button
       type="button"
       onClick={() => onOpen(order)}
-      className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 rounded-card border border-line bg-white p-3.5 text-left hover:border-forest sm:grid-cols-[auto_1fr_auto]"
+      className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 rounded-card border border-line bg-white p-3 text-left hover:border-forest sm:grid-cols-[auto_1fr_auto]"
     >
       <span className="col-span-2 sm:col-span-1">
         <ChannelBadge channel={order.channel} />
@@ -136,7 +136,7 @@ export function OrderDialog({ order, onClose }: { order: Order; onClose: () => v
     <Dialog onClose={onClose}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="font-display text-2xl font-bold">{order.customer_name}</h2>
+          <h2 className="font-display text-xl font-bold">{order.customer_name}</h2>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-ink-soft">
             <ChannelBadge channel={order.channel} />
             <StatusBadge status={order.status} />
