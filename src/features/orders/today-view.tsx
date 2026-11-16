@@ -104,7 +104,17 @@ export function TodayView() {
     const toConfirm = orders.filter(
       (o) => o.status === "pending_payment" && o.channel !== "ml",
     );
-    return <SimpleView tasks={tasks} toPack={toPack} toConfirm={toConfirm} />;
+    const byStatus = (status: Order["status"]) =>
+      orders.filter((o) => o.status === status);
+    return (
+      <SimpleView
+        tasks={tasks}
+        toPack={toPack}
+        toConfirm={toConfirm}
+        toShip={byStatus("ready_to_ship")}
+        shipped={byStatus("shipped")}
+      />
+    );
   }
   const ready = orders.filter((o) => o.status === "ready_to_ship");
   const count = (s: Order["status"]) => orders.filter((o) => o.status === s).length;

@@ -1,7 +1,13 @@
 "use client";
 
 import { formatBRL } from "@/lib/format";
-import { confirmPayment, finishPack, finishTask } from "./actions";
+import {
+  confirmPayment,
+  finishDelivery,
+  finishPack,
+  finishShip,
+  finishTask,
+} from "./actions";
 import { bigButton } from "./order-ui";
 import { usePanel } from "./panel-context";
 import { orderTotalCents, type Task } from "./production";
@@ -22,7 +28,7 @@ function Column({
   children: React.ReactNode;
 }) {
   return (
-    <section className="space-y-3 rounded-3xl bg-[#eef3ee] p-3">
+    <section className="space-y-3 rounded-3xl bg-[#eef3ee] p-3 md:w-72 md:shrink-0">
       <h2 className="flex items-center justify-between px-1 font-display text-2xl font-bold text-forest">
         {title}
         <span className="grid min-w-9 place-items-center rounded-full bg-forest px-2 py-0.5 text-lg text-white">
@@ -43,15 +49,19 @@ export function SimpleView({
   tasks,
   toPack,
   toConfirm,
+  toShip,
+  shipped,
 }: {
   tasks: Task[];
   toPack: Order[];
   toConfirm: Order[];
+  toShip: Order[];
+  shipped: Order[];
 }) {
   const { run } = usePanel();
 
   return (
-    <div className="grid items-start gap-4 text-xl md:grid-cols-3">
+    <div className="flex flex-col gap-4 text-xl md:flex-row md:items-start md:overflow-x-auto md:pb-2">
       <Column title="Pagamento" count={toConfirm.length} empty="Nada para confirmar.">
         {toConfirm.map((o) => (
           <article key={o.id} className={card}>
@@ -101,6 +111,34 @@ export function SimpleView({
             <button className={action} onClick={() => finishPack(run, o)}>
               📦 Embalei
             </button>
+          </article>
+        ))}
+      </Column>
+
+      <Column title="Enviar" count={toShip.length} empty="Nada para enviar.">
+        {toShip.map((o) => (
+          <article key={o.id} className={card}>
+            <h3 className="font-bold leading-tight">{o.customer_name}</h3>
+            {o.destination && <p className="text-ink-soft">{o.destination}</p>}
+            <button className={action} onClick={() => finishShip(run, o)}>
+              🚚 Enviei
+            </button>
+          </article>
+        ))}
+      </Column>
+
+      <Column title="Enviado" count={shipped.length} empty="Nada a caminho.">
+        {shipped.map((o) => (
+          <article key={o.id} className={card}>
+            <h3 className="font-bold leading-tight">{o.customer_name}</h3>
+            {o.destination && <p className="text-ink-soft">{o.destination}</p>}
+            {o.tracking && <p className="text-ink-soft">Rastreio: {o.tracking}</p>}
+            {/* Pedido do ML tem entrega acompanhada pelo próprio ML. */}
+            {o.channel !== "ml" && (
+              <button className={action} onClick={() => finishDelivery(run, o)}>
+                ✔ Entregue
+              </button>
+            )}
           </article>
         ))}
       </Column>

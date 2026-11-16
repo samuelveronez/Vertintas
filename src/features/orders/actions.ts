@@ -33,3 +33,19 @@ export function confirmPayment(run: Run, order: Order) {
     () => setStatus(order.id, "pending_payment", { paid_at: null }),
   );
 }
+
+export function finishShip(run: Run, order: Order) {
+  return run(
+    () => setStatus(order.id, "shipped"),
+    `Pedido de ${order.customer_name} enviado.`,
+    () => setStatus(order.id, "ready_to_ship"),
+  );
+}
+
+export function finishDelivery(run: Run, order: Order) {
+  return run(
+    () => setStatus(order.id, "delivered"),
+    `Pedido de ${order.customer_name} entregue.`,
+    () => setStatus(order.id, "shipped"),
+  );
+}
