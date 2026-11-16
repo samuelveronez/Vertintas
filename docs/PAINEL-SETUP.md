@@ -11,17 +11,16 @@ Decisões em [ADR 0002](decisions/0002-painel-de-pedidos-supabase.md). Protótip
 
 1. Criar um projeto em supabase.com (região São Paulo).
 2. Aplicar, nesta ordem, `supabase/migrations/20261115000000_orders_panel.sql` e
-   `20261116000000_public_settings.sql` e, depois, `20261118000000_customers.sql` (SQL Editor ou
+   `20261116000000_public_settings.sql` e, depois, `20261118000000_customers.sql` e `20261119000000_team_and_customers_admin.sql` (SQL Editor ou
    `supabase db push`).
-3. Em Authentication → Users, criar um usuário por pessoa (e-mail e senha). Depois, no SQL
-   Editor, liberar cada um:
+3. Em Authentication → Users, criar um usuário por pessoa (e-mail e senha). A **primeira** pessoa é
+   liberada por SQL (a tela de Equipe só abre para quem já é staff); as demais, em Painel → Equipe.
+   Todos da equipe têm os mesmos poderes.
 
    ```sql
-   insert into public.staff (user_id, name, is_admin)
-   select id, 'Samuel', true from auth.users where email = 'EMAIL_AQUI';
+   insert into public.staff (user_id, name)
+   select id, 'NOME_AQUI' from auth.users where lower(email) = 'EMAIL_AQUI';
    ```
-
-   `is_admin = true` só para quem pode conectar o Mercado Livre.
 
 4. Em Authentication → Providers, **manter** o cadastro público ligado: o login por e-mail dos
    clientes ([ADR 0004](decisions/0004-clientes-e-remarketing.md)) cria usuários. A equipe é só quem

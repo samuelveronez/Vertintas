@@ -12,6 +12,8 @@ const tabs = [
   { href: "/painel/", label: "Hoje", modes: ["simples", "completo"] },
   { href: "/painel/pedidos/", label: "Todos os pedidos", modes: ["completo"] },
   { href: "/painel/estoque/", label: "Estoque", modes: ["completo"] },
+  { href: "/painel/clientes/", label: "Clientes", modes: ["completo"] },
+  { href: "/painel/equipe/", label: "Equipe", modes: ["completo"] },
   { href: "/painel/canais/", label: "Canais de venda", modes: ["completo"] },
 ];
 
@@ -23,6 +25,7 @@ export function PanelFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [auth, setAuth] = useState<Auth>("loading");
+  const [email, setEmail] = useState("");
   const onLogin = pathname.startsWith("/painel/entrar");
 
   useEffect(() => {
@@ -31,15 +34,20 @@ export function PanelFrame({ children }: { children: React.ReactNode }) {
     let active = true;
 
     // Só quem está na tabela `staff` entra; qualquer outro login cai em "sem acesso".
-    async function check(userId: string | undefined) {
-      if (!userId) return active && setAuth("out");
-      const { data } = await client.from("staff").select("user_id").eq("user_id", userId);
-      if (active) setAuth(data?.length ? "ok" : "denied");
+    async function check(user: { id: string; email?: string } | undefined) {
+      if (!user) return active && setAuth("out");
+      const { data } = await client
+        .from("staff")
+        .select("user_id")
+        .eq("user_id", user.id);
+      if (!active) return;
+      setEmail(user.email ?? "");
+      setAuth(data?.length ? "ok" : "denied");
     }
 
-    client.auth.getSession().then(({ data }) => check(data.session?.user.id));
+    client.auth.getSession().then(({ data }) => check(data.session?.user));
     const { data: sub } = client.auth.onAuthStateChange((_event, session) => {
-      setTimeout(() => check(session?.user.id), 0);
+      setTimeout(() => check(session?.user), 0);
     });
     return () => {
       active = false;
@@ -65,7 +73,8 @@ export function PanelFrame({ children }: { children: React.ReactNode }) {
   if (auth === "denied")
     return (
       <Notice>
-        Este e-mail não tem acesso ao painel. Peça para o administrador liberar.{" "}
+        O e-mail <strong>{email}</strong> não tem acesso ao painel. Peça para alguém da
+        equipe liberar esse e-mail em Painel → Equipe.{" "}
         <button className="font-bold underline" onClick={() => supabase?.auth.signOut()}>
           Sair
         </button>

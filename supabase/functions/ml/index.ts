@@ -28,18 +28,18 @@ const json = (body: unknown, status = 200) =>
 
 type Db = ReturnType<typeof admin>;
 
-/** Quem chama precisa estar logado e na tabela `staff`; `adminOnly` exige administrador. */
-async function requireStaff(db: Db, req: Request, adminOnly: boolean) {
+/** Quem chama precisa estar logado e na tabela `staff`. */
+async function requireStaff(db: Db, req: Request) {
   const jwt = req.headers.get("Authorization")?.replace(/^Bearer /, "");
   if (!jwt) return false;
   const { data } = await db.auth.getUser(jwt);
   if (!data.user) return false;
   const { data: row } = await db
     .from("staff")
-    .select("is_admin")
+    .select("user_id")
     .eq("user_id", data.user.id)
     .maybeSingle();
-  return Boolean(row && (!adminOnly || row.is_admin));
+  return Boolean(row);
 }
 
 async function tokenRequest(params: Record<string, string>) {
@@ -203,7 +203,7 @@ Deno.serve(async (req) => {
 
     const { action } = await req.json();
     if (action === "connect") {
-      if (!(await requireStaff(db, req, true))) return json({ error: "Sem permissão" }, 403);
+      if (!(await requireStaff(db, req))) return json({ error: "Sem permissão" }, 403);
       const state = crypto.randomUUID();
       await db.from("ml_connection").upsert({ id: 1, oauth_state: state });
       const auth = new URL(ML_AUTH);
@@ -216,7 +216,7 @@ Deno.serve(async (req) => {
       return json({ url: auth.toString() });
     }
     if (action === "sync") {
-      if (!(await requireStaff(db, req, false))) return json({ error: "Sem permissão" }, 403);
+      if (!(await requireStaff(db, req))) return json({ error: "Sem permissão" }, 403);
       await sync(db);
       return json({ ok: true });
     }
