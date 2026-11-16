@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { formatBRL } from "@/lib/format";
 import {
   confirmPayment,
@@ -8,7 +9,7 @@ import {
   finishShip,
   finishTask,
 } from "./actions";
-import { bigButton } from "./order-ui";
+import { OrderDialog, bigButton } from "./order-ui";
 import { usePanel } from "./panel-context";
 import { orderTotalCents, type Task } from "./production";
 import type { Order } from "./types";
@@ -58,14 +59,26 @@ export function SimpleView({
   toShip: Order[];
   shipped: Order[];
 }) {
-  const { run } = usePanel();
+  const { run, orders } = usePanel();
+  const [open, setOpen] = useState<Order | null>(null);
+  const openById = (id: string) => setOpen(orders.find((o) => o.id === id) ?? null);
+
+  const Name = ({ order }: { order: Order }) => (
+    <button
+      type="button"
+      onClick={() => setOpen(order)}
+      className="block w-full text-left font-bold leading-tight underline-offset-2 hover:underline"
+    >
+      {order.customer_name}
+    </button>
+  );
 
   return (
     <div className="flex flex-col gap-3 text-sm md:flex-row md:items-start md:overflow-x-auto md:pb-2">
       <Column title="Pagamento" count={toConfirm.length} empty="Nada para confirmar.">
         {toConfirm.map((o) => (
           <article key={o.id} className={card}>
-            <h3 className="font-bold leading-tight">{o.customer_name}</h3>
+            <Name order={o} />
             <p className="font-display text-xl font-bold text-forest">
               {formatBRL(orderTotalCents(o))}
             </p>
@@ -80,6 +93,19 @@ export function SimpleView({
         {tasks.map((t) => (
           <article key={t.key} className={card}>
             <h3 className="font-bold leading-tight">{t.name}</h3>
+            <ul className="flex flex-wrap gap-1 text-sm">
+              {t.orders.map((o) => (
+                <li key={o.orderId}>
+                  <button
+                    type="button"
+                    onClick={() => openById(o.orderId)}
+                    className="rounded-full bg-surface px-2 py-0.5 hover:bg-[#e4eae4]"
+                  >
+                    {o.customer} · {o.qty}
+                  </button>
+                </li>
+              ))}
+            </ul>
             {t.toMake > 0 && (
               <p className="font-display text-xl font-bold text-forest">
                 Fabricar {t.toMake}
@@ -100,7 +126,7 @@ export function SimpleView({
       <Column title="Embalar" count={toPack.length} empty="Nada para embalar.">
         {toPack.map((o) => (
           <article key={o.id} className={card}>
-            <h3 className="font-bold leading-tight">{o.customer_name}</h3>
+            <Name order={o} />
             <ul className="space-y-0.5 rounded-lg bg-[#eef3ee] p-2">
               {o.order_items.map((i) => (
                 <li key={i.id}>
@@ -118,7 +144,7 @@ export function SimpleView({
       <Column title="Enviar" count={toShip.length} empty="Nada para enviar.">
         {toShip.map((o) => (
           <article key={o.id} className={card}>
-            <h3 className="font-bold leading-tight">{o.customer_name}</h3>
+            <Name order={o} />
             {o.destination && <p className="text-ink-soft">{o.destination}</p>}
             <button className={action} onClick={() => finishShip(run, o)}>
               🚚 Enviei
@@ -130,7 +156,7 @@ export function SimpleView({
       <Column title="Enviado" count={shipped.length} empty="Nada a caminho.">
         {shipped.map((o) => (
           <article key={o.id} className={card}>
-            <h3 className="font-bold leading-tight">{o.customer_name}</h3>
+            <Name order={o} />
             {o.destination && <p className="text-ink-soft">{o.destination}</p>}
             {o.tracking && <p className="text-ink-soft">Rastreio: {o.tracking}</p>}
             {/* Pedido do ML tem entrega acompanhada pelo próprio ML. */}
@@ -142,6 +168,7 @@ export function SimpleView({
           </article>
         ))}
       </Column>
+      {open && <OrderDialog order={open} onClose={() => setOpen(null)} />}
     </div>
   );
 }
