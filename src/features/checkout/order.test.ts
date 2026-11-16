@@ -106,8 +106,8 @@ describe("buildOrderMessage", () => {
       "VT1",
       false,
       undefined,
-      "Oi! {pedido} {x}",
+      "Oi! {pedido} de {nome} {x}",
     );
-    expect(msg).toBe("Oi! VT1 {x}");
+    expect(msg).toBe("Oi! VT1 de Maria Silva {x}");
   });
 });

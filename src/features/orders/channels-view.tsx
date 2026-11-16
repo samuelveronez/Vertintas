@@ -174,6 +174,9 @@ function WhatsappMessageCard() {
           <b>{"{pedido}"}</b>: código do pedido (obrigatório)
         </li>
         <li>
+          <b>{"{nome}"}</b>: nome do cliente
+        </li>
+        <li>
           <b>{"{total}"}</b>: valor, com ou sem frete
         </li>
         <li>

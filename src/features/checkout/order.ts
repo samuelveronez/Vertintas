@@ -99,7 +99,13 @@ export function customerPayload(c: Customer) {
 export const newOrderId = () => `VT${Date.now().toString(36).toUpperCase()}`;
 
 /** Variáveis aceitas no modelo da mensagem (editável no painel). */
-export const ORDER_TEMPLATE_VARS = ["pedido", "total", "pagamento", "pergunta"] as const;
+export const ORDER_TEMPLATE_VARS = [
+  "pedido",
+  "nome",
+  "total",
+  "pagamento",
+  "pergunta",
+] as const;
 
 export const DEFAULT_ORDER_TEMPLATE = [
   "Pedido {pedido} - site VerTintas",
@@ -120,6 +126,7 @@ export function buildOrderMessage(
   const total = productsCents + (shipping?.option.priceCents ?? 0);
   const values: Record<(typeof ORDER_TEMPLATE_VARS)[number], string> = {
     pedido: orderId,
+    nome: customer.name,
     total: `${formatBRL(total)} (${shipping ? "com frete" : "produtos"})`,
     pagamento: paidWithPix
       ? "Paguei o Pix (comprovante em anexo)."
