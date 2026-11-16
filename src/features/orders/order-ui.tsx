@@ -229,6 +229,28 @@ export function OrderDialog({ order, onClose }: { order: Order; onClose: () => v
 
       {complete && (
         <div className="space-y-3">
+          <label className="block text-base font-bold">
+            Ajustar status
+            <select
+              value={order.status}
+              onChange={(e) => {
+                const next = e.target.value as Status;
+                void act(next, `Status alterado para "${statusLabel[next]}".`, {
+                  paid_at:
+                    next === "pending_payment"
+                      ? null
+                      : (order.paid_at ?? new Date().toISOString()),
+                });
+              }}
+              className="mt-1 w-full rounded-xl border-2 border-line bg-white p-3 text-lg font-normal"
+            >
+              {(Object.keys(statusLabel) as Status[]).map((s) => (
+                <option key={s} value={s}>
+                  {statusLabel[s]}
+                </option>
+              ))}
+            </select>
+          </label>
           {order.status === "pending_payment" && !isMl && (
             <button
               className={bigButton}
