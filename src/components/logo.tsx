@@ -3,5 +3,5 @@ import logo from "@/assets/logo.jpg";
 
 // Import estático: o Next aplica o basePath do GitHub Pages ao caminho da imagem.
 export function Logo() {
-  return <Image src={logo} alt="VerTintas, tintas artesanais" priority className="h-16 w-auto" />;
+  return <Image src={logo} alt="VerTintas, tintas artesanais" priority className="h-20 w-auto sm:h-24" />;
 }
