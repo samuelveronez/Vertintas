@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import type { Order, Status, StockMap } from "./types";
+import type { Order, Status, StockItem, StockMap } from "./types";
 
 function db() {
   if (!supabase) throw new Error("Supabase não configurado");
@@ -25,6 +25,17 @@ export async function fetchOrders(): Promise<Order[]> {
 export async function fetchStock(): Promise<StockMap> {
   const rows = must(await db().from("stock").select("variant_id, qty"));
   return Object.fromEntries(rows.map((r) => [r.variant_id, r.qty]));
+}
+
+export async function fetchStockItems(): Promise<StockItem[]> {
+  return must(
+    await db().from("stock_items").select("variant_id, product, color, size, archived"),
+  ) as StockItem[];
+}
+
+/** Cria ou atualiza (arquivar/restaurar) itens; o estoque começa em zero. */
+export async function saveStockItems(items: StockItem[]) {
+  must(await db().from("stock_items").upsert(items));
 }
 
 export async function setStatus(

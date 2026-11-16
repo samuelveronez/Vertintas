@@ -9,8 +9,8 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { fetchOrders, fetchStock } from "./api";
-import type { Order, StockMap } from "./types";
+import { fetchOrders, fetchStock, fetchStockItems } from "./api";
+import type { Order, StockItem, StockMap } from "./types";
 
 export type Mode = "simples" | "completo";
 
@@ -45,6 +45,7 @@ type Toast = { message: string; undo?: () => Promise<void> };
 type PanelData = {
   orders: Order[];
   stock: StockMap;
+  stockItems: StockItem[];
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
@@ -74,6 +75,7 @@ const REFRESH_MS = 60_000;
 export function PanelProvider({ children }: { children: React.ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [stock, setStock] = useState<StockMap>({});
+  const [stockItems, setStockItems] = useState<StockItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<Toast | null>(null);
@@ -81,9 +83,14 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      const [o, s] = await Promise.all([fetchOrders(), fetchStock()]);
+      const [o, s, i] = await Promise.all([
+        fetchOrders(),
+        fetchStock(),
+        fetchStockItems(),
+      ]);
       setOrders(o);
       setStock(s);
+      setStockItems(i);
       setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erro ao carregar");
@@ -136,6 +143,7 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
     () => ({
       orders,
       stock,
+      stockItems,
       loading,
       error,
       refresh,
@@ -144,7 +152,7 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
       notify,
       run,
     }),
-    [orders, stock, loading, error, refresh, mode, notify, run],
+    [orders, stock, stockItems, loading, error, refresh, mode, notify, run],
   );
 
   return (

@@ -35,3 +35,12 @@ export type Order = {
 };
 
 export type StockMap = Record<string, number>;
+
+/** Linha de `stock_items`: produto criado no painel ou item do catálogo arquivado. */
+export type StockItem = {
+  variant_id: string;
+  product: string;
+  color: string;
+  size: string;
+  archived: boolean;
+};
