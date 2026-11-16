@@ -76,8 +76,20 @@ export function PanelFrame({ children }: { children: React.ReactNode }) {
   return (
     <PanelProvider>
       <Nav />
-      <div className="mx-auto max-w-5xl px-4 py-5 text-lg">{children}</div>
+      <Body>{children}</Body>
     </PanelProvider>
+  );
+}
+
+/** O Kanban do modo simples usa a largura toda; as demais telas ficam numa coluna de leitura. */
+function Body({ children }: { children: React.ReactNode }) {
+  const { mode } = usePanel();
+  return (
+    <div
+      className={`mx-auto px-4 py-5 text-lg ${mode === "completo" ? "max-w-5xl" : "max-w-[110rem]"}`}
+    >
+      {children}
+    </div>
   );
 }
 
