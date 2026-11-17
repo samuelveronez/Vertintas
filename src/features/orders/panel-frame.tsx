@@ -134,6 +134,12 @@ function Nav() {
               </button>
             ))}
           </div>
+          <Link
+            href="/painel/senha/"
+            className="flex min-h-9 items-center rounded-full border border-white/40 px-4 text-sm"
+          >
+            Trocar senha
+          </Link>
           <button
             type="button"
             className="min-h-9 rounded-full border border-white/40 px-4 text-sm"
