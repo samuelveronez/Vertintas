@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { buttonClass } from "@/components/button";
 import { usePanel } from "@/features/orders/panel-context";
+import { basePath } from "@/lib/config";
 import { supabase } from "@/lib/supabase";
 import { addStaff, fetchStaff, removeStaff, teamError, type StaffMember } from "./api";
 
@@ -14,6 +15,7 @@ export function TeamView() {
   const [team, setTeam] = useState<StaffMember[]>();
   const [me, setMe] = useState<string>();
   const [busy, setBusy] = useState(false);
+  const [added, setAdded] = useState<{ name: string; email: string; password: string }>();
 
   const load = useCallback(
     () => fetchStaff().then(setTeam, () => notify("Não foi possível carregar a equipe.")),
@@ -42,19 +44,38 @@ export function TeamView() {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
-    await act(
-      () => addStaff(String(data.get("email")), String(data.get("name"))),
-      "Pessoa liberada no painel.",
+    const name = String(data.get("name"));
+    const email = String(data.get("email"));
+    setBusy(true);
+    setAdded(undefined);
+    try {
+      const result = await addStaff(email, name);
+      if (result.created && result.password)
+        setAdded({ name, email, password: result.password });
+      else notify("Pessoa liberada no painel.");
+      form.reset();
+      await load();
+    } catch (err) {
+      notify(teamError(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const copyAccess = async (a: NonNullable<typeof added>) => {
+    const text = `Painel VerTintas\nEndereço: ${location.origin}${basePath}/painel/entrar/\nE-mail: ${a.email}\nSenha provisória: ${a.password}`;
+    await navigator.clipboard.writeText(text).then(
+      () => notify("Dados de acesso copiados."),
+      () => notify("Não foi possível copiar; anote a senha."),
     );
-    form.reset();
   };
 
   return (
     <div className="space-y-4">
       <h1 className="font-display text-2xl font-bold text-forest">Equipe</h1>
       <p className="text-ink-soft">
-        Quem está aqui entra no painel e tem os mesmos poderes. A pessoa precisa ter login
-        criado em Supabase → Authentication → Users.
+        Quem está aqui entra no painel e tem os mesmos poderes. Ao liberar um e-mail novo,
+        o login é criado na hora, com uma senha provisória.
       </p>
 
       <section className={card}>
@@ -72,10 +93,34 @@ export function TeamView() {
             <input name="email" type="email" required className={field} />
           </label>
           <button type="submit" disabled={busy} className={`${buttonClass()} min-h-10`}>
-            Liberar
+            {busy ? "Liberando…" : "Liberar"}
           </button>
         </form>
       </section>
+
+      {added && (
+        <section role="status" className={`${card} border-forest`}>
+          <h2 className="font-display text-lg font-bold">
+            Login criado para {added.name}
+          </h2>
+          <p>
+            E-mail: <b>{added.email}</b>
+            <br />
+            Senha provisória:{" "}
+            <b className="font-mono text-lg tracking-wider">{added.password}</b>
+          </p>
+          <p className="text-sm text-ink-soft">
+            Anote ou copie agora: a senha não aparece de novo. Passe para {added.name}{" "}
+            entrar em Painel → Entrar.
+          </p>
+          <button
+            className={`${buttonClass("outline")} min-h-10`}
+            onClick={() => copyAccess(added)}
+          >
+            Copiar dados de acesso
+          </button>
+        </section>
+      )}
 
       <section className={card}>
         <h2 className="font-display text-lg font-bold">Quem tem acesso</h2>

@@ -1,4 +1,4 @@
-name: Deploy da função de frete
+name: Deploy das Edge Functions
 
 on:
   push:
@@ -15,6 +15,7 @@ jobs:
       - run: |
           supabase functions deploy shipping-quote --project-ref "$SUPABASE_PROJECT_ID"
           supabase functions deploy melhor-envio-auth --project-ref "$SUPABASE_PROJECT_ID"
+          supabase functions deploy staff-admin --project-ref "$SUPABASE_PROJECT_ID"
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_ID: ${{ vars.SUPABASE_PROJECT_ID }}
